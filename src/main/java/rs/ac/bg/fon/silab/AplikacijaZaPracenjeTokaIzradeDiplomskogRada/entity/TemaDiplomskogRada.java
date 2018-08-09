@@ -88,14 +88,6 @@ public class TemaDiplomskogRada implements Serializable {
         this.opisTeme = opisTeme;
     }
 
-    public Predmet getPredmetIdFk() {
-        return predmetIdFk;
-    }
-
-    public void setPredmetIdFk(Predmet predmetIdFk) {
-        this.predmetIdFk = predmetIdFk;
-    }
-
     @XmlTransient
     public Collection<DiplomskiRad> getDiplomskiRadCollection() {
         return diplomskiRadCollection;
@@ -103,6 +95,14 @@ public class TemaDiplomskogRada implements Serializable {
 
     public void setDiplomskiRadCollection(Collection<DiplomskiRad> diplomskiRadCollection) {
         this.diplomskiRadCollection = diplomskiRadCollection;
+    }
+
+    public Predmet getPredmetIdFk() {
+        return predmetIdFk;
+    }
+
+    public void setPredmetIdFk(Predmet predmetIdFk) {
+        this.predmetIdFk = predmetIdFk;
     }
 
     @Override

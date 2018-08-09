@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Nalog implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
+   @Id
     @Basic(optional = false)
     @Column(name = "clan_sistema_id_fk",nullable = false)
     private Long clanSistemaIdFk;

@@ -7,25 +7,37 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Marina Guzvic
  */
 @Entity
+@Inheritance
+@DiscriminatorColumn(name = "tip_clana")
 @Table(name = "clan_sistema")
 @XmlRootElement
 @NamedQueries({
@@ -44,25 +56,19 @@ public class ClanSistema implements Serializable {
     @Basic(optional = false)
     @Column(name = "clan_sistema_id")
     private Long clanSistemaId;
-    @Column(name = "broj_telefona",length = 15)
+    @Column(name = "broj_telefona", length = 15)
     private String brojTelefona;
-    @Column(name = "ime",length = 20)
+    @Column(name = "ime", length = 20)
     private String ime;
-    @Column(name = "prezime",length = 20)
+    @Column(name = "prezime", length = 20)
     private String prezime;
-    @Column(name = "jmbg",length = 13)
+    @Column(name = "jmbg", length = 13)
     private String jmbg;
-    @Column(name = "broj_radne_knjizice",length = 10)
+    @Column(name = "broj_radne_knjizice", length = 10)
     private String brojRadneKnjizice;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "clanSistema")
-    @JsonBackReference(value = "nastavnik")
-    private Nastavnik nastavnik;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "clanSistema")
-    @JsonBackReference(value = "radnik")
-    private RadnikUStudentskojSluzbi radnikUStudentskojSluzbi;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "clanSistema")
-    @JsonBackReference(value = "student")
-    private Student student;
+    @Column(name = "datum_rodjenja")
+    @Temporal(TemporalType.DATE)
+    private Date datumRodjenja;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "clanSistema")
     @JsonBackReference(value = "nalog")
     private Nalog nalog;
@@ -122,29 +128,17 @@ public class ClanSistema implements Serializable {
         this.brojRadneKnjizice = brojRadneKnjizice;
     }
 
-    public Nastavnik getNastavnik() {
-        return nastavnik;
+   
+
+    public Date getDatumRodjenja() {
+        return datumRodjenja;
     }
 
-    public void setNastavnik(Nastavnik nastavnik) {
-        this.nastavnik = nastavnik;
+    public void setDatumRodjenja(Date datumRodjenja) {
+        this.datumRodjenja = datumRodjenja;
     }
 
-    public RadnikUStudentskojSluzbi getRadnikUStudentskojSluzbi() {
-        return radnikUStudentskojSluzbi;
-    }
-
-    public void setRadnikUStudentskojSluzbi(RadnikUStudentskojSluzbi radnikUStudentskojSluzbi) {
-        this.radnikUStudentskojSluzbi = radnikUStudentskojSluzbi;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
+    
 
     public Nalog getNalog() {
         return nalog;
@@ -178,5 +172,5 @@ public class ClanSistema implements Serializable {
     public String toString() {
         return "rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema[ clanSistemaId=" + clanSistemaId + " ]";
     }
-    
+
 }

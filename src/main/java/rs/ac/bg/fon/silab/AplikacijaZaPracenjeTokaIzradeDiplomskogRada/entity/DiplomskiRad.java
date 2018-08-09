@@ -62,7 +62,7 @@ public class DiplomskiRad implements Serializable {
     @JoinColumn(name = "komisija_id_fk", referencedColumnName = "komisija_id")
     @ManyToOne
     private Komisija komisijaIdFk;
-    @JoinColumn(name = "student_id_fk", referencedColumnName = "clan_sistema_id_fk")
+    @JoinColumn(name = "student_id_fk", referencedColumnName = "clan_sistema_id")
     @ManyToOne(optional = false)
     private Student studentIdFk;
     @JoinColumn(name = "tema_id_fk", referencedColumnName = "tema_id")

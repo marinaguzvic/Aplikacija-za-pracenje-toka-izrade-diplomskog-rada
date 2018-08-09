@@ -75,6 +75,14 @@ public class Predmet implements Serializable {
         this.nazivPredmeta = nazivPredmeta;
     }
 
+    public Katedra getKatedraIdFk() {
+        return katedraIdFk;
+    }
+
+    public void setKatedraIdFk(Katedra katedraIdFk) {
+        this.katedraIdFk = katedraIdFk;
+    }
+
     @XmlTransient
     public Collection<TemaDiplomskogRada> getTemaDiplomskogRadaCollection() {
         return temaDiplomskogRadaCollection;
@@ -82,14 +90,6 @@ public class Predmet implements Serializable {
 
     public void setTemaDiplomskogRadaCollection(Collection<TemaDiplomskogRada> temaDiplomskogRadaCollection) {
         this.temaDiplomskogRadaCollection = temaDiplomskogRadaCollection;
-    }
-
-    public Katedra getKatedraIdFk() {
-        return katedraIdFk;
-    }
-
-    public void setKatedraIdFk(Katedra katedraIdFk) {
-        this.katedraIdFk = katedraIdFk;
     }
 
     @Override

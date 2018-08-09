@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Komisija implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Id
+   @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "komisija_id")

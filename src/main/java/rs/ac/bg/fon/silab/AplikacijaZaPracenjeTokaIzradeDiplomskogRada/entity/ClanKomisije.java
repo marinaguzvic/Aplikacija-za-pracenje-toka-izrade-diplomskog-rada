@@ -36,9 +36,9 @@ public class ClanKomisije implements Serializable {
     protected ClanKomisijePK clanKomisijePK;
     @Column(name = "uloga_clana_komisije",length = 10)
     private String ulogaClanaKomisije;
-    @JoinColumn(name = "nastavnik_id_fk", referencedColumnName = "korisnik_sistema_id_fk")
+    @JoinColumn(name = "nastavnik_id_fk", referencedColumnName = "clan_sistema_id")
     @ManyToOne
-    private Nastavnik nastavnikIdFk;
+    private ClanSistema nastavnikIdFk;
     @JoinColumn(name = "komisija_id_fk", referencedColumnName = "komisija_id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Komisija komisija;
@@ -70,11 +70,11 @@ public class ClanKomisije implements Serializable {
         this.ulogaClanaKomisije = ulogaClanaKomisije;
     }
 
-    public Nastavnik getNastavnikIdFk() {
+    public ClanSistema getNastavnikIdFk() {
         return nastavnikIdFk;
     }
 
-    public void setNastavnikIdFk(Nastavnik nastavnikIdFk) {
+    public void setNastavnikIdFk(ClanSistema nastavnikIdFk) {
         this.nastavnikIdFk = nastavnikIdFk;
     }
 
