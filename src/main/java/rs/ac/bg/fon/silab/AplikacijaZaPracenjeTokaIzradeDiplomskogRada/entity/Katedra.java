@@ -45,7 +45,7 @@ public class Katedra implements Serializable {
     @Column(name = "naziv_katedre",length = 100)
     private String nazivKatedre;
     @OneToMany(mappedBy = "katedraIdFk")
-     @JsonBackReference(value = "nastavnikColl")
+    @JsonBackReference(value = "nastavnikColl")
     private Collection<Nastavnik> nastavnikCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "katedraIdFk")
     @JsonBackReference(value = "predmetColl")
@@ -75,11 +75,11 @@ public class Katedra implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Nastavnik> getClanSistemaCollection() {
+    public Collection<Nastavnik> getNastavnikCollection() {
         return nastavnikCollection;
     }
 
-    public void setClanSistemaCollection(Collection<Nastavnik> nastavnikCollection) {
+    public void setNastavnikCollection(Collection<Nastavnik> nastavnikCollection) {
         this.nastavnikCollection = nastavnikCollection;
     }
 

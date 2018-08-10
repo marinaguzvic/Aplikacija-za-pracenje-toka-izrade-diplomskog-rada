@@ -13,6 +13,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -69,6 +70,8 @@ public class ClanSistema implements Serializable {
     @Column(name = "datum_rodjenja")
     @Temporal(TemporalType.DATE)
     private Date datumRodjenja;
+    @Column(name = "tip_clana",insertable = false,updatable = false)
+    private char tipClana;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "clanSistema")
     @JsonBackReference(value = "nalog")
     private Nalog nalog;
@@ -171,6 +174,14 @@ public class ClanSistema implements Serializable {
     @Override
     public String toString() {
         return "rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema[ clanSistemaId=" + clanSistemaId + " ]";
+    }
+
+    public char getTipClana() {
+        return tipClana;
+    }
+
+    public void setTipClana(char tipClana) {
+        this.tipClana = tipClana;
     }
 
 }

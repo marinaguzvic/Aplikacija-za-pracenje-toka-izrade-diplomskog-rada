@@ -35,6 +35,8 @@ public class Dokument implements Serializable {
     protected DokumentPK dokumentPK;
     @Column(name = "naziv_dokumenta",length = 50)
     private String nazivDokumenta;
+     @Column(name = "tip_dokumenta",length = 50)
+    private String tipDokumenta;
     @Lob
     @Column(name = "sadrzaj_dokumenta")
     private byte[] sadrzajDokumenta;
@@ -49,6 +51,15 @@ public class Dokument implements Serializable {
     public Dokument(long diplomskiRadIdFk, int dokumentRb) {
         this.dokumentPK = new DokumentPK(diplomskiRadIdFk, dokumentRb);
     }
+
+    public Dokument(DokumentPK dokumentPK, String nazivDokumenta, String tipDokumenta, byte[] sadrzajDokumenta) {
+        this.dokumentPK = dokumentPK;
+        this.nazivDokumenta = nazivDokumenta;
+        this.tipDokumenta = tipDokumenta;
+        this.sadrzajDokumenta = sadrzajDokumenta;
+    }
+    
+    
 
     public DokumentPK getDokumentPK() {
         return dokumentPK;
@@ -97,6 +108,14 @@ public class Dokument implements Serializable {
     @Override
     public String toString() {
         return "rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Dokument[ dokumentPK=" + dokumentPK + " ]";
+    }
+
+    public String getTipDokumenta() {
+        return tipDokumenta;
+    }
+
+    public void setTipDokumenta(String tipDokumenta) {
+        this.tipDokumenta = tipDokumenta;
     }
     
 }

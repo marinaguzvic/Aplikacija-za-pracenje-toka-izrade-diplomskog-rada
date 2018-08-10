@@ -9,6 +9,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -35,7 +37,8 @@ public class ClanKomisije implements Serializable {
     @EmbeddedId
     protected ClanKomisijePK clanKomisijePK;
     @Column(name = "uloga_clana_komisije",length = 10)
-    private String ulogaClanaKomisije;
+    @Enumerated(EnumType.STRING)
+    private EnumUlogaClanaKomisije ulogaClanaKomisije;
     @JoinColumn(name = "nastavnik_id_fk", referencedColumnName = "clan_sistema_id")
     @ManyToOne
     private ClanSistema nastavnikIdFk;
@@ -62,11 +65,11 @@ public class ClanKomisije implements Serializable {
         this.clanKomisijePK = clanKomisijePK;
     }
 
-    public String getUlogaClanaKomisije() {
+    public EnumUlogaClanaKomisije getUlogaClanaKomisije() {
         return ulogaClanaKomisije;
     }
 
-    public void setUlogaClanaKomisije(String ulogaClanaKomisije) {
+    public void setUlogaClanaKomisije(EnumUlogaClanaKomisije ulogaClanaKomisije) {
         this.ulogaClanaKomisije = ulogaClanaKomisije;
     }
 

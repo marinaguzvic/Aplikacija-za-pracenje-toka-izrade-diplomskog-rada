@@ -33,6 +33,7 @@ public class DokumentPK implements Serializable {
         this.dokumentRb = dokumentRb;
     }
 
+
     public long getDiplomskiRadIdFk() {
         return diplomskiRadIdFk;
     }

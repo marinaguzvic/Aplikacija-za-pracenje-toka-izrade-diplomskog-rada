@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.student;
+package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.tipdokumenta;
 
 import org.springframework.data.repository.CrudRepository;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TipDokumenta;
 
 /**
  *
  * @author Marina Guzvic
  */
-public interface StudentRepository extends CrudRepository<Student, Long>{
-    
+public interface TipDokumentaRepository extends CrudRepository<TipDokumenta, Long>{
 }

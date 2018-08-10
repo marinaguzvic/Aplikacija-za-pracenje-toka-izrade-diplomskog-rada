@@ -11,6 +11,8 @@ import java.util.Collection;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -34,9 +36,11 @@ public class Nastavnik extends ClanSistema implements Serializable {
 
 
     @Column(name = "zvanje",length = 20)
-    private String zvanje;
+    @Enumerated(EnumType.STRING)
+    private EnumZvanje zvanje;
     @Column(name = "titula",length = 20)
-    private String titula;
+    @Enumerated(EnumType.STRING)
+    private EnumTitula titula;
     @JoinColumn(name = "katedra_id_fk", referencedColumnName = "katedra_id")
     @ManyToOne
     private Katedra katedraIdFk;
@@ -44,19 +48,19 @@ public class Nastavnik extends ClanSistema implements Serializable {
     @JsonBackReference(value = "clanColl")
     private Collection<ClanKomisije> clanKomisijeCollection;
 
-    public String getZvanje() {
+    public EnumZvanje getZvanje() {
         return zvanje;
     }
 
-    public void setZvanje(String zvanje) {
+    public void setZvanje(EnumZvanje zvanje) {
         this.zvanje = zvanje;
     }
 
-    public String getTitula() {
+    public EnumTitula getTitula() {
         return titula;
     }
 
-    public void setTitula(String titula) {
+    public void setTitula(EnumTitula titula) {
         this.titula = titula;
     }
 
