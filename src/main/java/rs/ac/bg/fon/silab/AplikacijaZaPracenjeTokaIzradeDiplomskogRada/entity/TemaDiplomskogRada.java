@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -53,9 +54,9 @@ public class TemaDiplomskogRada implements Serializable {
     @JoinColumn(name = "predmet_id_fk", referencedColumnName = "predmet_id")
     @ManyToOne
     private Predmet predmetIdFk;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "temaIdFk")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "temaIdFk")
     @JsonBackReference(value = "diplrColl")
-    private Collection<DiplomskiRad> diplomskiRadCollection;
+    private DiplomskiRad diplomskiRad;
 
     public TemaDiplomskogRada() {
     }
@@ -89,12 +90,12 @@ public class TemaDiplomskogRada implements Serializable {
     }
 
     @XmlTransient
-    public Collection<DiplomskiRad> getDiplomskiRadCollection() {
-        return diplomskiRadCollection;
+    public DiplomskiRad getDiplomskiRad() {
+        return diplomskiRad;
     }
 
-    public void setDiplomskiRadCollection(Collection<DiplomskiRad> diplomskiRadCollection) {
-        this.diplomskiRadCollection = diplomskiRadCollection;
+    public void setDiplomskiRad(DiplomskiRad diplomskiRad) {
+        this.diplomskiRad = diplomskiRad;
     }
 
     public Predmet getPredmetIdFk() {

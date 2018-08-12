@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
 
@@ -26,23 +27,23 @@ public class ClanKomisijeController {
     private ClanKomisijeService clanKomisijeService;
 
     @RequestMapping("/komisijas/{komisijaId}/clankomisijes")
-    public List<ClanKomisije> getAllClanKomisije(@PathVariable String komisijaId) {
+    public List<ClanDTO> getAllClanKomisije(@PathVariable String komisijaId) {
         return clanKomisijeService.getAllClanKomisijes(komisijaId);
     }
 
     @RequestMapping("/komisijas/{komisijaId}/clankomisijes/{clanRb}")
-    public ClanKomisije getClanKomisije(@PathVariable String komisijaId, @PathVariable String clanRb) {
+    public ClanDTO getClanKomisije(@PathVariable String komisijaId, @PathVariable String clanRb) {
         return clanKomisijeService.getClanKomisije(komisijaId,clanRb);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/komisijas/{komisijaId}/clankomisijes/{clanRb}")
-    public void addClanKomisije(@RequestBody ClanKomisije clanKomisije,@PathVariable String komisijaId) {
-        clanKomisijeService.addClanKomisije(clanKomisije,komisijaId);
+    public ClanDTO addClanKomisije(@RequestBody ClanDTO clanKomisije,@PathVariable String komisijaId,@PathVariable String clanRb) {
+        return clanKomisijeService.addClanKomisije(clanKomisije,komisijaId,clanRb);
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/komisijas/{komisijaId}/clankomisijes/{clanRb}")
-    public void updateClanKomisije(@RequestBody ClanKomisije clanKomisije,@PathVariable String komisijaId) {
-        clanKomisijeService.updateClanKomisije(clanKomisije,komisijaId);
+    public ClanDTO updateClanKomisije(@RequestBody ClanDTO clanKomisije,@PathVariable String komisijaId,@PathVariable String clanRb) {
+        return clanKomisijeService.updateClanKomisije(clanKomisije,komisijaId,clanRb);
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/komisijas/{komisijaId}/clankomisijes/{clanRb}")

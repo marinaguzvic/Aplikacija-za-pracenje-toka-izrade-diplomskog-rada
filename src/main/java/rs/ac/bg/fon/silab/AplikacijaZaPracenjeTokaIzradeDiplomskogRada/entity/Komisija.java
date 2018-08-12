@@ -8,6 +8,7 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -46,7 +47,7 @@ public class Komisija implements Serializable {
     private DiplomskiRad diplomskiRadCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "komisija")
     @JsonBackReference(value = "clanKomisijeColl")
-    private Collection<ClanKomisije> clanKomisijeCollection;
+    private List<ClanKomisije> clanKomisijeCollection;
 
     public Komisija() {
     }
@@ -73,11 +74,11 @@ public class Komisija implements Serializable {
     }
 
     @XmlTransient
-    public Collection<ClanKomisije> getClanKomisijeCollection() {
+    public List<ClanKomisije> getClanKomisijeCollection() {
         return clanKomisijeCollection;
     }
 
-    public void setClanKomisijeCollection(Collection<ClanKomisije> clanKomisijeCollection) {
+    public void setClanKomisijeCollection(List<ClanKomisije> clanKomisijeCollection) {
         this.clanKomisijeCollection = clanKomisijeCollection;
     }
 

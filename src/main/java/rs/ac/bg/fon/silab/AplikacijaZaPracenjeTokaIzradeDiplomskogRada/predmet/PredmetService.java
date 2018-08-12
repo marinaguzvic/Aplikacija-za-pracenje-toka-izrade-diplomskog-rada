@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.PredmetDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Katedra;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Predmet;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 
 /**
  *
@@ -22,15 +24,21 @@ public class PredmetService {
 
     @Autowired
     PredmetRepository predmetRepository;
+    @Autowired
+            GenericMapper mapper;
 
-    List<Predmet> getAllPredmets() {
+    List<PredmetDTO> getAllPredmets() {
         List<Predmet> predmets = new ArrayList<>();
         predmetRepository.findAll().forEach(predmets::add);
-        return predmets;
+        List<PredmetDTO> predmetDTOs = new ArrayList<>();
+        for (Predmet predmet : predmets) {
+            predmetDTOs.add(mapper.predmetToPredmetDTO(predmet));
+        }
+        return predmetDTOs;
     }
 
-    Predmet getPredmet(String predmetId) {
-        return predmetRepository.findById(Long.parseLong(predmetId)).get();
+    PredmetDTO getPredmet(String predmetId) {
+        return mapper.predmetToPredmetDTO(predmetRepository.findById(Long.parseLong(predmetId)).get());
     }
 
 }

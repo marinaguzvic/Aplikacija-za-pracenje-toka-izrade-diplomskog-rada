@@ -114,7 +114,7 @@ public class Predmet implements Serializable {
 
     @Override
     public String toString() {
-        return "rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Predmet[ predmetId=" + predmetId + " ]";
+        return getNazivPredmeta();
     }
     
 }

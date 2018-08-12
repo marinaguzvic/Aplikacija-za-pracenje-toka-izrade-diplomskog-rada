@@ -8,6 +8,7 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -46,7 +47,7 @@ public class Nastavnik extends ClanSistema implements Serializable {
     private Katedra katedraIdFk;
     @OneToMany(mappedBy = "nastavnikIdFk")
     @JsonBackReference(value = "clanColl")
-    private Collection<ClanKomisije> clanKomisijeCollection;
+    private List<ClanKomisije> clanKomisijeCollection;
 
     public EnumZvanje getZvanje() {
         return zvanje;
@@ -72,12 +73,17 @@ public class Nastavnik extends ClanSistema implements Serializable {
         this.katedraIdFk = katedraIdFk;
     }
 
-    public Collection<ClanKomisije> getClanKomisijeCollection() {
+    public List<ClanKomisije> getClanKomisijeCollection() {
         return clanKomisijeCollection;
     }
 
-    public void setClanKomisijeCollection(Collection<ClanKomisije> clanKomisijeCollection) {
+    public void setClanKomisijeCollection(List<ClanKomisije> clanKomisijeCollection) {
         this.clanKomisijeCollection = clanKomisijeCollection;
+    }
+
+    @Override
+    public String toString() {
+        return getIme() + " " + getPrezime();
     }
     
     

@@ -20,7 +20,7 @@ public class ClanKomisijePK implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "komisija_id_fk",nullable = false)
-    private long komisijaIdFk;
+    private Long komisijaIdFk;
     @Basic(optional = false)
     @Column(name = "clan_komisije_rb",nullable = false)
     private int clanKomisijeRb;
@@ -28,16 +28,16 @@ public class ClanKomisijePK implements Serializable {
     public ClanKomisijePK() {
     }
 
-    public ClanKomisijePK(long komisijaIdFk, int clanKomisijeRb) {
+    public ClanKomisijePK(Long komisijaIdFk, int clanKomisijeRb) {
         this.komisijaIdFk = komisijaIdFk;
         this.clanKomisijeRb = clanKomisijeRb;
     }
 
-    public long getKomisijaIdFk() {
+    public Long getKomisijaIdFk() {
         return komisijaIdFk;
     }
 
-    public void setKomisijaIdFk(long komisijaIdFk) {
+    public void setKomisijaIdFk(Long komisijaIdFk) {
         this.komisijaIdFk = komisijaIdFk;
     }
 
@@ -52,7 +52,7 @@ public class ClanKomisijePK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) komisijaIdFk;
+        hash += (long) komisijaIdFk;
         hash += (int) clanKomisijeRb;
         return hash;
     }

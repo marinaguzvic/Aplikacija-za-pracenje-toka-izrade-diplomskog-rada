@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clan.ClanSistemaRepository;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 
 /**
  *
@@ -23,24 +25,30 @@ public class StudentService {
     
     @Autowired
     StudentRepository studentRepository;
+    @Autowired
+    GenericMapper mapper;
 
-    public List<Student> getAllStudents() {
+    public List<StudentDTO> getAllStudents() {
         List<Student> students = new ArrayList<>();
         studentRepository.findAll().forEach(students::add);
-        return students;
+        List<StudentDTO> studentDTOs = new ArrayList<>();
+        for (Student student : students) {
+            studentDTOs.add(mapper.studentToStudentDTO(student));
+        }
+        return studentDTOs;
     }
 
-    public Student getStudent(String id) {
-        return studentRepository.findById(Long.parseLong(id)).get();
+    public StudentDTO getStudent(String id) {
+        return mapper.studentToStudentDTO(studentRepository.findById(Long.parseLong(id)).get());
     }
 
-    void addStudent(Student student,String id) {
+    StudentDTO addStudent(StudentDTO student,String id) {
         
-        studentRepository.save(student);
+        return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
     }
 
-    void updateStudent(Student student) {
-        studentRepository.save(student);
+    StudentDTO updateStudent(StudentDTO student) {
+        return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
     }
 
     void deleteStudent(String id) {

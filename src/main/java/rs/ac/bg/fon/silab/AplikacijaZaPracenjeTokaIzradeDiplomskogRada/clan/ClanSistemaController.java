@@ -23,28 +23,28 @@ public class ClanSistemaController {
     @Autowired
     private ClanSistemaService clanSistemaService;
 
-    @RequestMapping("/clansistemas")
-    public List<ClanSistema> getAllClanSistemas() {
-        return clanSistemaService.getAllClanSistemas();
-    }
+//    @RequestMapping("/clansistemas")
+//    public List<ClanSistema> getAllClanSistemas() {
+//        return clanSistemaService.getAllClanSistemas();
+//    }
 
     @RequestMapping("/clansistemas/{id}")
     public ClanSistema getClanSistema(@PathVariable String id) {
         return clanSistemaService.getClanSistema(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/clansistemas")
-    public void addClanSistema(@RequestBody ClanSistema clanSistema) {
-        clanSistemaService.addTemaDiplomskogRada(clanSistema);
-    }
+//    @RequestMapping(method = RequestMethod.POST, value = "/clansistemas")
+//    public void addClanSistema(@RequestBody ClanSistema clanSistema) {
+//        clanSistemaService.addTemaDiplomskogRada(clanSistema);
+//    }
     
-    @RequestMapping(method = RequestMethod.PUT, value = "/clansistemas/{id}")
-    public void updateClanSistema(@RequestBody ClanSistema clanSistema,@PathVariable String id) {
-        clanSistemaService.updateClanSistema(clanSistema);
-    }
+//    @RequestMapping(method = RequestMethod.PUT, value = "/clansistemas/{id}")
+//    public void updateClanSistema(@RequestBody ClanSistema clanSistema,@PathVariable String id) {
+//        clanSistemaService.updateClanSistema(clanSistema);
+//    }
     
-    @RequestMapping(method = RequestMethod.DELETE,value = "/clansistemas/{id}")
-    public void deleteClanSistema(@PathVariable String id) {
-        clanSistemaService.deleteClanSistema(id);
-    }
+//    @RequestMapping(method = RequestMethod.DELETE,value = "/clansistemas/{id}")
+//    public void deleteClanSistema(@PathVariable String id) {
+//        clanSistemaService.deleteClanSistema(id);
+//    }
 }

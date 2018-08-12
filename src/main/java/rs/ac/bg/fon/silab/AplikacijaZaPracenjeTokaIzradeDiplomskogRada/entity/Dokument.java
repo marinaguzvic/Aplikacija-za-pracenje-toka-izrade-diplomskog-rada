@@ -9,7 +9,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -40,6 +42,9 @@ public class Dokument implements Serializable {
     @Lob
     @Column(name = "sadrzaj_dokumenta")
     private byte[] sadrzajDokumenta;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "diplomski_rad_id_fk", referencedColumnName = "diplomski_rad_id", insertable = false, updatable = false)
+    private DiplomskiRad diplomskiRad;
 
     public Dokument() {
     }
@@ -107,7 +112,7 @@ public class Dokument implements Serializable {
 
     @Override
     public String toString() {
-        return "rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Dokument[ dokumentPK=" + dokumentPK + " ]";
+        return getNazivDokumenta();
     }
 
     public String getTipDokumenta() {
@@ -117,5 +122,14 @@ public class Dokument implements Serializable {
     public void setTipDokumenta(String tipDokumenta) {
         this.tipDokumenta = tipDokumenta;
     }
+
+    public DiplomskiRad getDiplomskiRad() {
+        return diplomskiRad;
+    }
+
+    public void setDiplomskiRad(DiplomskiRad diplomskiRad) {
+        this.diplomskiRad = diplomskiRad;
+    }
+    
     
 }

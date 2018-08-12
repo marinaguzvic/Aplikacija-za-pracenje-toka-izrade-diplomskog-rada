@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.TemaDiplomskogRadaDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 
 /**
@@ -24,24 +25,29 @@ public class TemaDiplomskogRadaController {
     private TemaDiplomskogRadaService temaDiplomskogRadaService;
 
     @RequestMapping("/temadiplomskogradas")
-    public List<TemaDiplomskogRada> getAllTemaDiplomskogRadas() {
+    public List<TemaDiplomskogRadaDTO> getAllTemaDiplomskogRadas() {
         return temaDiplomskogRadaService.getAllTeme();
+    }
+    
+    @RequestMapping("/temadiplomskogradas/search/{nazivTeme}")
+    public List<TemaDiplomskogRadaDTO> getTemaDiplomskogRadasByNazivTeme(@PathVariable String nazivTeme){
+        return temaDiplomskogRadaService.getTemaDiplomskogRadasByNazivTeme(nazivTeme);
     }
 
     @RequestMapping("/temadiplomskogradas/{id}")
-    public TemaDiplomskogRada getTemaDiplomskogRada(@PathVariable String id) {
+    public TemaDiplomskogRadaDTO getTemaDiplomskogRada(@PathVariable String id) throws Exception {
         return temaDiplomskogRadaService.getTemaDiplomskogRada(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/temadiplomskogradas")
-    public void addTemaDiplomskogRada(@RequestBody TemaDiplomskogRada tema) {
-        temaDiplomskogRadaService.addTemaDiplomskogRada(tema);
+    public TemaDiplomskogRadaDTO addTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema) {
+        return temaDiplomskogRadaService.addTemaDiplomskogRada(tema);
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/temadiplomskogradas/{id}")
-    public void updateCourse(@RequestBody TemaDiplomskogRada tema,@PathVariable String id) {
+    public TemaDiplomskogRadaDTO updateCourse(@RequestBody TemaDiplomskogRadaDTO tema,@PathVariable String id) {
         tema.setTemaId(Long.parseLong(id));
-        temaDiplomskogRadaService.updateTemaDiplomskogRada(tema);
+        return temaDiplomskogRadaService.updateTemaDiplomskogRada(tema);
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/temadiplomskogradas/{id}")

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.PredmetDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Katedra;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Predmet;
 
@@ -26,12 +27,12 @@ public class PredmetController {
     private PredmetService predmetService;
 
     @RequestMapping("/predmets")
-    public List<Predmet> getAllPredmets() {
+    public List<PredmetDTO> getAllPredmets() {
         return predmetService.getAllPredmets();
     }
 
     @RequestMapping("/predmets/{predmetId}")
-    public Predmet getPredmet(@PathVariable String predmetId) {
+    public PredmetDTO getPredmet(@PathVariable String predmetId) {
         return predmetService.getPredmet(predmetId);
     }
 

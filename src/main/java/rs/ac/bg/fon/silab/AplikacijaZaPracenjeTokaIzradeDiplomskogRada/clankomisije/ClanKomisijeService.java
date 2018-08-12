@@ -7,11 +7,14 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clankomi
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisijePK;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 
 /**
  *
@@ -22,25 +25,35 @@ public class ClanKomisijeService {
 
     @Autowired
     ClanKomisijeRepository clanKomisijeRepository;
+    @Autowired
+    GenericMapper mapper;
 
-    List<ClanKomisije> getAllClanKomisijes(String komisijaId) {
+    List<ClanDTO> getAllClanKomisijes(String komisijaId) {
         List<ClanKomisije> clanKomisijes = new ArrayList<>();
         clanKomisijeRepository.findByClanKomisijePKKomisijaIdFk(Long.parseLong(komisijaId)).forEach(clanKomisijes::add);
-        return clanKomisijes;
+        List<ClanDTO> clans = new ArrayList<>();
+        for (ClanKomisije clanKomisije : clanKomisijes) {
+            clans.add(mapper.clanKomisijeToClanDTO(clanKomisije));
+        }
+        return clans;
     }
 
-    ClanKomisije getClanKomisije(String komisijaId, String clanRb) {
-        return clanKomisijeRepository.findById(new ClanKomisijePK(Long.parseLong(komisijaId), Integer.parseInt(clanRb))).get();
+    ClanDTO getClanKomisije(String komisijaId, String clanRb) {
+        return mapper.clanKomisijeToClanDTO(clanKomisijeRepository.findById(new ClanKomisijePK(Long.parseLong(komisijaId), Integer.parseInt(clanRb))).get());
     }
 
-    void addClanKomisije(ClanKomisije clanKomisije, String komisijaId) {
-        clanKomisije.getClanKomisijePK().setKomisijaIdFk(Long.parseLong(komisijaId));
+    ClanDTO addClanKomisije(ClanDTO clanDTO, String komisijaId,String clanKomisijeRb) {
+        ClanKomisije clanKomisije = mapper.clanDTOToClanKomisije(clanDTO);
+        clanKomisije.setClanKomisijePK(new ClanKomisijePK(Long.parseLong(komisijaId), Integer.parseInt(clanKomisijeRb)));
         clanKomisijeRepository.save(clanKomisije);
+        return clanDTO;
     }
 
-    void updateClanKomisije(ClanKomisije clanKomisije, String komisijaId) {
-        clanKomisije.getClanKomisijePK().setKomisijaIdFk(Long.parseLong(komisijaId));
+    ClanDTO updateClanKomisije(ClanDTO clanDTO, String komisijaId,String clanKomisijeRb) {
+        ClanKomisije clanKomisije = mapper.clanDTOToClanKomisije(clanDTO);
+        clanKomisije.setClanKomisijePK(new ClanKomisijePK(Long.parseLong(komisijaId), Integer.parseInt(clanKomisijeRb)));
         clanKomisijeRepository.save(clanKomisije);
+        return clanDTO;
     }
 
     void deleteClanKomisije(String komisijaId, String clanRb) {

@@ -32,6 +32,7 @@ public class ClanSistemaService {
     }
 
     public void addTemaDiplomskogRada(ClanSistema clanSistema) {
+        
         clanSistemaRepository.save(clanSistema);
     }
 

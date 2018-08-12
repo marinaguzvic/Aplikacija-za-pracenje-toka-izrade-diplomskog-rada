@@ -15,5 +15,5 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Te
  * @author Marina Guzvic
  */
 public interface TemaDiplomskogRadaRepository extends CrudRepository<TemaDiplomskogRada, Long>{
-    public List<TemaDiplomskogRada> getTemaDiplomskogRadasByNazivTeme(String nazivTeme);
+    public List<TemaDiplomskogRada> findByNazivTeme(String nazivTeme);
 }

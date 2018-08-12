@@ -13,5 +13,5 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Na
  * @author Marina Guzvic
  */
 public interface NalogRepository extends CrudRepository<Nalog, Long>{
-    
+    public Nalog findByKorisnickoImeAndSifra(String korisnickoIme, String sifra);
 }

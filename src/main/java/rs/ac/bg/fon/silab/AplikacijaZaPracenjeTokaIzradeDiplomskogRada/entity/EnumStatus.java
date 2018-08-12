@@ -10,5 +10,5 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
  * @author Marina Guzvic
  */
 public enum EnumStatus {
-    PRIJAVLJEN,ODOBREN,PREDAT,ODBRANJEN
+    PRIJAVLJEN,ODOBREN,ODREDJENA_KOMISIJA,PREDAT,ODBRANJEN
 }

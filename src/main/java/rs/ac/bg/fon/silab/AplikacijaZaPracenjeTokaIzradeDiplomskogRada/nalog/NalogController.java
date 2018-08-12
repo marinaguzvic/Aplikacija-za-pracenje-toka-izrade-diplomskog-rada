@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanSistemaDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
 
 /**
@@ -23,29 +25,34 @@ public class NalogController {
         @Autowired
     private NalogService nalogService;
 
-    @RequestMapping("/nalogs")
-    public List<Nalog> getAllNalogs() {
-        return nalogService.getAllNalogs();
+//    @RequestMapping("/nalogs")
+//    public List<Nalog> getAllNalogs() {
+//        return nalogService.getAllNalogs();
+//    }
+//
+//    @RequestMapping("/nalogs/{id}")
+//    public Nalog getNalog(@PathVariable String id) {
+//        return nalogService.getNalog(id);
+//    }
+   @RequestMapping(method = RequestMethod.POST, value = "/authenticate")     
+    ClanSistemaDTO authenticate(@RequestBody Nalog nalog) throws Exception{
+        return nalogService.authenticate(nalog);
+        
     }
 
-    @RequestMapping("/nalogs/{id}")
-    public Nalog getNalog(@PathVariable String id) {
-        return nalogService.getNalog(id);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/nalogs")
-    public void addNalog(@RequestBody Nalog nalog) {
-        nalogService.addNalog(nalog);
-    }
-    
-    @RequestMapping(method = RequestMethod.PUT, value = "/nalogs/{id}")
-    public void updateNalog(@RequestBody Nalog nalog,@PathVariable String id) {
-        nalog.getClanSistema().setClanSistemaId(Long.parseLong(id));
-        nalogService.updateNalog(nalog);
-    }
-    
-    @RequestMapping(method = RequestMethod.DELETE,value = "/nalogs/{id}")
-    public void deleteNalog(@PathVariable String id) {
-        nalogService.deleteNalog(id);
-    }
+//    @RequestMapping(method = RequestMethod.POST, value = "/nalogs")
+//    public void addNalog(@RequestBody Nalog nalog) {
+//        nalogService.addNalog(nalog);
+//    }
+//    
+//    @RequestMapping(method = RequestMethod.PUT, value = "/nalogs/{id}")
+//    public void updateNalog(@RequestBody Nalog nalog,@PathVariable String id) {
+//        nalog.getClanSistema().setClanSistemaId(Long.parseLong(id));
+//        nalogService.updateNalog(nalog);
+//    }
+//    
+//    @RequestMapping(method = RequestMethod.DELETE,value = "/nalogs/{id}")
+//    public void deleteNalog(@PathVariable String id) {
+//        nalogService.deleteNalog(id);
+//    }
 }

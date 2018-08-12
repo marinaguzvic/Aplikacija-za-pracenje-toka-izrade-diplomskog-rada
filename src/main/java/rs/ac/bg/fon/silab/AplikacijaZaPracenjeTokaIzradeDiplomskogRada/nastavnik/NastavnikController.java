@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.NastavnikDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 
 /**
  *
@@ -24,29 +28,37 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Te
 public class NastavnikController {
     @Autowired
     private NastavnikService nastavnikService;
+    @Autowired 
+    GenericMapper mapper;
 
     @RequestMapping("/nastavniks")
-    public List<Nastavnik> getAllNastavniks() {
+    public List<NastavnikDTO> getAllNastavniks() {
         return nastavnikService.getAllNastavniks();
     }
 
     @RequestMapping("/nastavniks/{id}")
-    public Nastavnik getNastavnik(@PathVariable String id) {
+    public NastavnikDTO getNastavnik(@PathVariable String id) {
         return nastavnikService.getNastavnik(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/nastavniks/{id}")
-    public void addNastavnik(@RequestBody Nastavnik nastavnik) {
-        nastavnikService.addNastavnik(nastavnik);
+    public NastavnikDTO addNastavnik(@RequestBody NastavnikDTO nastavnik) {
+        return nastavnikService.addNastavnik(nastavnik);
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/nastavniks/{id}")
-    public void updateNastavnik(@RequestBody Nastavnik nastavnik,@PathVariable String id) {
-        nastavnikService.updateNastavnik(nastavnik);
+    public NastavnikDTO updateNastavnik(@RequestBody NastavnikDTO nastavnik,@PathVariable String id) {
+        return nastavnikService.updateNastavnik(nastavnik);
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/nastavniks/{id}")
-    public void deleteNastavnikStudent(@PathVariable String id) {
+    public void deleteNastavnik(@PathVariable String id) throws Exception {
         nastavnikService.deleteNastavnik(id);
+    }
+    
+    @RequestMapping("/nastavniks/{id}/diplomskirads")
+    public List<DiplomskiRadDTO> getDiplomskiRadsForNastavnik(@PathVariable String id){
+      return nastavnikService.getDiplomskiRadsForNastavnik(id);
+        
     }
 }

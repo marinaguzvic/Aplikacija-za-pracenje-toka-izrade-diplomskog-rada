@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 
@@ -25,23 +26,23 @@ public class StudentController {
     private StudentService studentService;
 
     @RequestMapping("/students")
-    public List<Student> getAllStudents() {
+    public List<StudentDTO> getAllStudents() {
         return studentService.getAllStudents();
     }
 
     @RequestMapping("/students/{id}")
-    public Student getStudent(@PathVariable String id) {
+    public StudentDTO getStudent(@PathVariable String id) {
         return studentService.getStudent(id);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/students/{id}")
-    public void addStudent(@RequestBody Student student,@PathVariable String id) {
-        studentService.addStudent(student,id);
+    public StudentDTO addStudent(@RequestBody StudentDTO student,@PathVariable String id) {
+        return studentService.addStudent(student,id);
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/students/{id}")
-    public void updateStudent(@RequestBody Student student) {
-        studentService.updateStudent(student);
+    public StudentDTO updateStudent(@RequestBody StudentDTO student) {
+        return studentService.updateStudent(student);
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/students/{id}")

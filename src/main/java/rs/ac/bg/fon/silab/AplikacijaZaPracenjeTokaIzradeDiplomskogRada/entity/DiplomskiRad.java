@@ -5,9 +5,12 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -63,11 +67,11 @@ public class DiplomskiRad implements Serializable {
     private Date datumPredaje;
     @Column(name = "ocena")
     private Integer ocena;
-    @Column(name = "status",length = 15)
+    @Column(name = "status",length = 20)
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
     @JoinColumn(name = "komisija_id_fk", referencedColumnName = "komisija_id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Komisija komisijaIdFk;
     @JoinColumn(name = "student_id_fk", referencedColumnName = "clan_sistema_id")
     @OneToOne(optional = false)
@@ -75,6 +79,9 @@ public class DiplomskiRad implements Serializable {
     @JoinColumn(name = "tema_id_fk", referencedColumnName = "tema_id")
     @OneToOne(optional = false)
     private TemaDiplomskogRada temaIdFk;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "diplomskiRad")
+    @JsonBackReference(value = "dokumentCollection")
+    private List<Dokument> dokumentCollection;
 
     public DiplomskiRad() {
     }
@@ -186,6 +193,14 @@ public class DiplomskiRad implements Serializable {
 
     public void setDatumPredaje(Date datumPredaje) {
         this.datumPredaje = datumPredaje;
+    }
+
+    public List<Dokument> getDokumentCollection() {
+        return dokumentCollection;
+    }
+
+    public void setDokumentCollection(List<Dokument> dokumentCollection) {
+        this.dokumentCollection = dokumentCollection;
     }
     
 }
