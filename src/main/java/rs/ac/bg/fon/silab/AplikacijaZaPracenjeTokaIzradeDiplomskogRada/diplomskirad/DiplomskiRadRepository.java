@@ -5,6 +5,7 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.diplomskirad;
 
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 
@@ -12,6 +13,6 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Di
  *
  * @author Marina Guzvic
  */
-public interface DiplomskiRadRepository extends CrudRepository<DiplomskiRad, Long>{
+public interface DiplomskiRadRepository extends CrudRepository<DiplomskiRad, Long>,QuerydslPredicateExecutor<DiplomskiRad>{
     public DiplomskiRad findByStudentIdFkClanSistemaId(Long clanSistemaId);
 }

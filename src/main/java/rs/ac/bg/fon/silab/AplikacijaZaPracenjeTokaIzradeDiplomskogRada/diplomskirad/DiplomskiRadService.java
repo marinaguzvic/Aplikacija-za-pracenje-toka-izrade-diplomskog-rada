@@ -5,6 +5,13 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.diplomskirad;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.EnumPath;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.JPAExpressions;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.komisija.*;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clankomisije.*;
 import java.util.ArrayList;
@@ -19,6 +26,7 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.Diplo
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDatumOdbraneDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadOdbraniDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadPrijaviDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadSearchDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadUnesiKomisijuDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisijePK;
@@ -29,6 +37,8 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Ka
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Komisija;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QClanKomisije;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QDiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nastavnik.NastavnikRepository;
 
@@ -84,6 +94,9 @@ public class DiplomskiRadService {
         if (diplomskiRad.getStudentIdFk() == null) {
             throw new Exception("Ne moze se prijaviti diplomski rad, nije prosledjen student");
         }
+        if (diplomskiRad.getStudentIdFk().getGodinaStudija() != 4) {
+            throw new Exception("Ne moze se prijaviti diplomski rad za studenta koji nije na završnoj godini studija");
+        }
         if (diplomskiRad.getTemaIdFk() == null) {
             throw new Exception("Ne moze se prijaviti diplomski rad, nije prosledjena tema");
         }
@@ -111,16 +124,18 @@ public class DiplomskiRadService {
         if (diplomskiRad.getStatus() != EnumStatus.ODREDJENA_KOMISIJA) {
             throw new Exception("Ne moze se predati rad za koji nije odredjena komisija!");
         }
-        if(diplomskiRad.getDokumentCollection().size() < 1)throw new Exception("Nema predatih dokumenata za diplomski rad!");
+        if (diplomskiRad.getDokumentCollection().size() < 1) {
+            throw new Exception("Nema predatih dokumenata za diplomski rad!");
+        }
         diplomskiRad.setDatumPredaje(new Date());
         diplomskiRad.setStatus(EnumStatus.PREDAT);
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
     }
 
-    DiplomskiRadDTO unesiKomisiju(DiplomskiRadUnesiKomisijuDTO diplomskiRadUnesiKomisijuDTO,String diplomskiRadId) throws Exception {
+    DiplomskiRadDTO unesiKomisiju(DiplomskiRadUnesiKomisijuDTO diplomskiRadUnesiKomisijuDTO, String diplomskiRadId) throws Exception {
         DiplomskiRad diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
         //validateKomisija(diplomskiRadUnesiKomisijuDTO, diplomskiRad);
-        
+
         Komisija komisija = new Komisija();
         if (diplomskiRad.getStatus() != EnumStatus.ODOBREN) {
             throw new Exception("Ne moze se uneti komisija za rad koji nije odobren!");
@@ -139,7 +154,7 @@ public class DiplomskiRadService {
             Nastavnik nastavnik;
             try {
                 nastavnik = nastavnikRepository.findById(clan.getNastavnik()).get();
-                
+
             } catch (Exception e) {
                 throw new Exception("Nastavnik sa datim ID-jem: " + clan.getNastavnik() + " ne postoji u bazi!");
             }
@@ -152,15 +167,21 @@ public class DiplomskiRadService {
                 saDrugeKatedre = true;
             }
             for (ClanKomisije clanKomisije1 : clanKomisijes) {
-                if(clanKomisije.getNastavnikIdFk() == nastavnik)throw new Exception("Ne smeju postojati dva ista nastavnika kao clanovi komisije");
+                if (clanKomisije1.getNastavnikIdFk().equals(nastavnik)) {
+                    throw new Exception("Ne smeju postojati dva ista nastavnika kao clanovi komisije");
+                }
             }
             clanKomisije.setNastavnikIdFk(nastavnik);
             clanKomisije.setKomisija(komisija);
             clanKomisijes.add(clanKomisije);
             i++;
         }
-        if(mentor != 1)throw new Exception("U komisiji mora biti tacno jedan mentor!");
-        if(!saDrugeKatedre) throw new Exception("U komisiji mora biti barem jedan nastavnik koji nije sa katedre na kojoj je radjen diplomski rad!");
+        if (mentor != 1) {
+            throw new Exception("U komisiji mora biti tacno jedan mentor!");
+        }
+        if (!saDrugeKatedre) {
+            throw new Exception("U komisiji mora biti barem jedan nastavnik koji nije sa katedre na kojoj je radjen diplomski rad!");
+        }
         diplomskiRad.setKomisijaIdFk(komisija);
         diplomskiRad = diplomskiRadRepository.save(diplomskiRad);
         for (ClanKomisije clanKomisije : clanKomisijes) {
@@ -173,25 +194,78 @@ public class DiplomskiRadService {
 
     }
 
-    DiplomskiRadDTO odrediDatumOdbrane(DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO,String diplomskiRadId) throws Exception{
+    DiplomskiRadDTO odrediDatumOdbrane(DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO, String diplomskiRadId) throws Exception {
         DiplomskiRad diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
-        
+
         if (diplomskiRad.getStatus() != EnumStatus.PREDAT || TimeUnit.DAYS.convert((diplomskiRadDatumOdbraneDTO.getDatumOdbrane().getTime() - diplomskiRad.getDatumPredaje().getTime()), TimeUnit.MILLISECONDS) < 15) {
             throw new Exception("Rad moze da se brani po isteku 15 dana od dana predaje!");
         }
         diplomskiRad.setDatumOdbrane(diplomskiRadDatumOdbraneDTO.getDatumOdbrane());
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
-        
+
     }
 
     DiplomskiRadDTO odbrani(DiplomskiRadOdbraniDTO diplomskiRadOdbraniDTO, String diplomskiRadId) throws Exception {
         DiplomskiRad diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
-        if(diplomskiRad.getDatumOdbrane() == null)throw new Exception("Datum odbrane nije definisan");
-        if(diplomskiRadOdbraniDTO.getOcena() <= 5 || diplomskiRadOdbraniDTO.getOcena() > 10)throw new Exception("Ocena iz diplomskog rada mora biti izmedju 6 i 10");
-        if(diplomskiRad.getDatumOdbrane().after(new Date()))throw new Exception("Datum odbrane ne sme biti nakon unosa ocene");
+        if (diplomskiRad.getDatumOdbrane() == null) {
+            throw new Exception("Datum odbrane nije definisan");
+        }
+        if (diplomskiRadOdbraniDTO.getOcena() <= 5 || diplomskiRadOdbraniDTO.getOcena() > 10) {
+            throw new Exception("Ocena iz diplomskog rada mora biti izmedju 6 i 10");
+        }
+        if (diplomskiRad.getDatumOdbrane().after(new Date())) {
+            throw new Exception("Datum odbrane ne sme biti nakon unosa ocene");
+        }
         diplomskiRad.setOcena(diplomskiRadOdbraniDTO.getOcena());
         diplomskiRad.setStatus(EnumStatus.ODBRANJEN);
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
     }
 
+    List<DiplomskiRadDTO> getDiplomskiRadsForNastavnikSearch(DiplomskiRadSearchDTO diplomskiRadSearchDTO) {
+        QDiplomskiRad qDiplomskiRad = QDiplomskiRad.diplomskiRad;
+        QClanKomisije qClanKomisije = QClanKomisije.clanKomisije;
+        Predicate exp = qDiplomskiRad.komisijaIdFk.komisijaId
+                .in(JPAExpressions
+                        .select(qClanKomisije.clanKomisijePK.komisijaIdFk)
+                        .from(qClanKomisije)
+                        .where(qClanKomisije.nastavnikIdFk.clanSistemaId.eq(diplomskiRadSearchDTO.getNastavnikId())
+                                .and(isIn(qClanKomisije.ulogaClanaKomisije, diplomskiRadSearchDTO.getUlogaClanaKomisijes()))))
+                .and(isIn(qDiplomskiRad.status, diplomskiRadSearchDTO.getStatuses()))
+                .and(isLike(qDiplomskiRad.studentIdFk.ime, diplomskiRadSearchDTO.getImeStudenta()))
+                .and(isLike(qDiplomskiRad.studentIdFk.prezime, diplomskiRadSearchDTO.getPrezimeStudenta()))
+                .and(isLike(qDiplomskiRad.studentIdFk.brojIndeksa, diplomskiRadSearchDTO.getBrojIndeksa()));
+        List<DiplomskiRad> diplomskiRads = new ArrayList<>();
+        diplomskiRadRepository.findAll(exp).forEach(diplomskiRads::add);
+        List<DiplomskiRadDTO> diplomskiRadDTOs = new ArrayList<>();
+        for (DiplomskiRad diplomskiRad : diplomskiRads) {
+            diplomskiRadDTOs.add(mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad));
+        }
+        return diplomskiRadDTOs;
+    }
+
+    BooleanExpression isLike(StringPath property, String searchProperty) {
+        return searchProperty != null ? property.contains(searchProperty) : Expressions.asBoolean(true).isTrue();
+    }
+
+    private BooleanExpression isEq(StringPath property, String searchProperty) {
+        return searchProperty != null ? property.eq(searchProperty) : Expressions.asBoolean(true).isTrue();
+    }
+
+    private BooleanExpression isIn(StringPath property, String[] searchProperty) {
+        if (searchProperty.length == 0) {
+            return Expressions.asBoolean(true).isTrue();
+        }
+        return property.in(searchProperty);
+    }
+
+    private BooleanExpression isIn(EnumPath property, String[] searchProperty) {
+        if (searchProperty == null || searchProperty.length == 0) {
+            return Expressions.asBoolean(true).isTrue();
+        }
+        return property.in((Object[]) searchProperty);
+    }
+
+    private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {
+        return property.in(searchProperty);
+    }
 }

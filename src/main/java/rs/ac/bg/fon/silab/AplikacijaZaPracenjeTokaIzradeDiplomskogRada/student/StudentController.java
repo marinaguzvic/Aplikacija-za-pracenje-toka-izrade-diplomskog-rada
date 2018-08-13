@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentSearchDTO;
 
 /**
  *
@@ -28,6 +27,11 @@ public class StudentController {
     @RequestMapping("/students")
     public List<StudentDTO> getAllStudents() {
         return studentService.getAllStudents();
+    }
+    
+        @RequestMapping(method = RequestMethod.POST, value = "/students/search")
+    public List<StudentDTO> addStudent(@RequestBody StudentSearchDTO student) {
+        return studentService.searchStudents(student);
     }
 
     @RequestMapping("/students/{id}")

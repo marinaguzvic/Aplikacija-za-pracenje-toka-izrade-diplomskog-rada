@@ -49,6 +49,13 @@ public class Nastavnik extends ClanSistema implements Serializable {
     @JsonBackReference(value = "clanColl")
     private List<ClanKomisije> clanKomisijeCollection;
 
+    public Nastavnik() {
+    }
+    
+    public Nastavnik(Long clanSistemaId) {
+        this.setClanSistemaId(clanSistemaId);
+    }
+
     public EnumZvanje getZvanje() {
         return zvanje;
     }

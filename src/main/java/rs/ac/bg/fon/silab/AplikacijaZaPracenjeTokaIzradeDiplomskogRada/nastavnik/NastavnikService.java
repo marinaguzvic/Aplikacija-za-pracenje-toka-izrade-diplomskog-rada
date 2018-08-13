@@ -5,15 +5,29 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nastavnik;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DatePath;
+import com.querydsl.core.types.dsl.EnumPath;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.JPAExpressions;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadSearchDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.NastavnikDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QClanKomisije;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QDiplomskiRad;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QNastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 
 /**
@@ -53,12 +67,11 @@ public class NastavnikService {
     }
 
     void deleteNastavnik(String id) throws Exception {
-        try{
+        try {
             nastavnikRepository.deleteById(Long.parseLong(id));
-        }catch(IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             throw new Exception("Nastavnik sa Id-jem " + id + " ne postoji u bazi");
         }
-        
 
     }
 
@@ -70,6 +83,30 @@ public class NastavnikService {
             diplomskiRads.add(mapper.diplomskiRadToDiplomskiRadDTO(clanKomisije.getKomisija().getDiplomskiRadCollection()));
         });
         return diplomskiRads;
+    }
+    
+
+    
+      BooleanExpression isLike(StringPath property, String searchProperty) {
+        return searchProperty != null ? property.contains(searchProperty) : Expressions.asBoolean(true).isTrue();
+    }
+
+    private BooleanExpression isEq(StringPath property, String searchProperty) {
+        return searchProperty != null ? property.eq(searchProperty) : Expressions.asBoolean(true).isTrue();
+    }
+    
+     private BooleanExpression isIn(StringPath property, String[] searchProperty) {
+         if(searchProperty.length == 0)return Expressions.asBoolean(true).isTrue();
+        return property.in(searchProperty);
+    }
+     
+      private BooleanExpression isIn(EnumPath property, String[] searchProperty) {
+          if(searchProperty.length == 0)return Expressions.asBoolean(true).isTrue();
+        return property.in((Object[]) searchProperty);
+    }
+     
+    private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {
+        return property.in(searchProperty);
     }
 
 }

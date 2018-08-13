@@ -19,6 +19,7 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.Diplo
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDatumOdbraneDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadOdbraniDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadPrijaviDTO;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadSearchDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadUnesiKomisijuDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
@@ -85,7 +86,12 @@ public class DiplomskiRadController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/{diplomskiRadId}/odredidatumodbrane")
-    public DiplomskiRadDTO odbrani(@RequestBody DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO, @PathVariable String diplomskiRadId) throws Exception {
+    public DiplomskiRadDTO odrediDatumOdbrane(@RequestBody DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO, @PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.odrediDatumOdbrane(diplomskiRadDatumOdbraneDTO, diplomskiRadId);
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/search")
+    public List<DiplomskiRadDTO> searchDiplomskiRads(@RequestBody DiplomskiRadSearchDTO diplomskiRadSearchDTO){
+        return diplomskiRadService.getDiplomskiRadsForNastavnikSearch(diplomskiRadSearchDTO);
     }
 }
