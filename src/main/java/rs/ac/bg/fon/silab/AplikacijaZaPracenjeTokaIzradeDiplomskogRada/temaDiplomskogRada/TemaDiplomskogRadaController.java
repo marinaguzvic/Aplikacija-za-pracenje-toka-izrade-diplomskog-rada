@@ -51,7 +51,7 @@ public class TemaDiplomskogRadaController {
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/temadiplomskogradas/{id}")
-    public void deleteTemaDiplomskogRada(@PathVariable String id) {
+    public void deleteTemaDiplomskogRada(@PathVariable String id) throws Exception {
         
         temaDiplomskogRadaService.deleteTemaDiplomskogRada(id);
     }

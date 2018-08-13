@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,9 +36,9 @@ public class Student extends ClanSistema implements Serializable {
     private String brojIndeksa;
     @Column(name = "godina_studija")
     private Integer godinaStudija;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "studentIdFk")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "studentIdFk")
     @JsonBackReference(value = "diplRadColl")
-    private Collection<DiplomskiRad> diplomskiRadCollection;
+    private DiplomskiRad diplomskiRadCollection;
 
     public String getBrojIndeksa() {
         return brojIndeksa;
@@ -55,11 +56,11 @@ public class Student extends ClanSistema implements Serializable {
         this.godinaStudija = godinaStudija;
     }
 
-    public Collection<DiplomskiRad> getDiplomskiRadCollection() {
+    public DiplomskiRad getDiplomskiRadCollection() {
         return diplomskiRadCollection;
     }
 
-    public void setDiplomskiRadCollection(Collection<DiplomskiRad> diplomskiRadCollection) {
+    public void setDiplomskiRadCollection(DiplomskiRad diplomskiRadCollection) {
         this.diplomskiRadCollection = diplomskiRadCollection;
     }
 

@@ -30,7 +30,7 @@ public class StudentController {
     }
     
         @RequestMapping(method = RequestMethod.POST, value = "/students/search")
-    public List<StudentDTO> addStudent(@RequestBody StudentSearchDTO student) {
+    public List<StudentDTO> searchStudent(@RequestBody StudentSearchDTO student) {
         return studentService.searchStudents(student);
     }
 
@@ -39,9 +39,9 @@ public class StudentController {
         return studentService.getStudent(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/students/{id}")
-    public StudentDTO addStudent(@RequestBody StudentDTO student,@PathVariable String id) {
-        return studentService.addStudent(student,id);
+    @RequestMapping(method = RequestMethod.POST, value = "/students")
+    public StudentDTO addStudent(@RequestBody StudentDTO student) throws Exception {
+        return studentService.addStudent(student);
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/students/{id}")
@@ -50,7 +50,7 @@ public class StudentController {
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/students/{id}")
-    public void deleteStudent(@PathVariable String id) {
+    public void deleteStudent(@PathVariable String id) throws Exception {
         
         studentService.deleteStudent(id);
     }

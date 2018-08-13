@@ -41,20 +41,20 @@ public class NastavnikController {
         return nastavnikService.getNastavnik(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/nastavniks/{id}")
-    public NastavnikDTO addNastavnik(@RequestBody NastavnikDTO nastavnik) {
-        return nastavnikService.addNastavnik(nastavnik);
-    }
-    
-    @RequestMapping(method = RequestMethod.PUT, value = "/nastavniks/{id}")
-    public NastavnikDTO updateNastavnik(@RequestBody NastavnikDTO nastavnik,@PathVariable String id) {
-        return nastavnikService.updateNastavnik(nastavnik);
-    }
-    
-    @RequestMapping(method = RequestMethod.DELETE,value = "/nastavniks/{id}")
-    public void deleteNastavnik(@PathVariable String id) throws Exception {
-        nastavnikService.deleteNastavnik(id);
-    }
+//    @RequestMapping(method = RequestMethod.POST, value = "/nastavniks/{id}")
+//    public NastavnikDTO addNastavnik(@RequestBody NastavnikDTO nastavnik) {
+//        return nastavnikService.addNastavnik(nastavnik);
+//    }
+//    
+//    @RequestMapping(method = RequestMethod.PUT, value = "/nastavniks/{id}")
+//    public NastavnikDTO updateNastavnik(@RequestBody NastavnikDTO nastavnik,@PathVariable String id) {
+//        return nastavnikService.updateNastavnik(nastavnik);
+//    }
+//    
+//    @RequestMapping(method = RequestMethod.DELETE,value = "/nastavniks/{id}")
+//    public void deleteNastavnik(@PathVariable String id) throws Exception {
+//        nastavnikService.deleteNastavnik(id);
+//    }
     
     @RequestMapping("/nastavniks/{id}/diplomskirads")
     public List<DiplomskiRadDTO> getDiplomskiRadsForNastavnik(@PathVariable String id){

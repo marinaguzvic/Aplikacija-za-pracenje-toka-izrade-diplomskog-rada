@@ -53,7 +53,15 @@ public class TemaDiplomskogRadaService {
         return mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(temaDiplomskogRadaRepository.save(mapper.temaDiplomskogRadaDTOToTemaDiplomskogRada(tema)));
     }
 
-    void deleteTemaDiplomskogRada(String id) {
+    void deleteTemaDiplomskogRada(String id) throws Exception {
+        TemaDiplomskogRada tema;
+        try {
+            tema = temaDiplomskogRadaRepository.findById(Long.parseLong(id)).get();
+        } catch (Exception e) {
+            throw new Exception("Tema se ne moze obrisati jer ne postoji u bazi");
+            
+        }
+        if(tema.getDiplomskiRad() != null)throw new Exception("Tema se ne moze obrisati jer ima prijavljen diplomski rad.");
         temaDiplomskogRadaRepository.deleteById(Long.parseLong(id));
     }
 

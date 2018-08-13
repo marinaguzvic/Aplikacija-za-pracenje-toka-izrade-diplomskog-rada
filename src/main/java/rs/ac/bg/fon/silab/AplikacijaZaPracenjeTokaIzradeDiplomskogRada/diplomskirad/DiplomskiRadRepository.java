@@ -15,4 +15,5 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Di
  */
 public interface DiplomskiRadRepository extends CrudRepository<DiplomskiRad, Long>,QuerydslPredicateExecutor<DiplomskiRad>{
     public DiplomskiRad findByStudentIdFkClanSistemaId(Long clanSistemaId);
+    public DiplomskiRad findBytemaIdFkTemaId(Long temaId);
 }

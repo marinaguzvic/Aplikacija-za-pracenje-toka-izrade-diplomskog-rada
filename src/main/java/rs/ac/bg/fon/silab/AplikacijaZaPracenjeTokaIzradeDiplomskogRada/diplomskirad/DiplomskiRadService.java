@@ -12,9 +12,11 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
+import java.lang.reflect.Array;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.komisija.*;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clankomisije.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +34,7 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Cl
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisijePK;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumStatus;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumTitula;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumUlogaClanaKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Katedra;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Komisija;
@@ -39,8 +42,12 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Na
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QDiplomskiRad;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nastavnik.NastavnikRepository;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.student.StudentRepository;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.temaDiplomskogRada.TemaDiplomskogRadaRepository;
 
 /**
  *
@@ -53,6 +60,10 @@ public class DiplomskiRadService {
     DiplomskiRadRepository diplomskiRadRepository;
     @Autowired
     NastavnikRepository nastavnikRepository;
+    @Autowired
+    StudentRepository studentRepository;
+    @Autowired
+    TemaDiplomskogRadaRepository temaDiplomskogRadaRepository;
     @Autowired
     GenericMapper mapper;
 
@@ -94,12 +105,34 @@ public class DiplomskiRadService {
         if (diplomskiRad.getStudentIdFk() == null) {
             throw new Exception("Ne moze se prijaviti diplomski rad, nije prosledjen student");
         }
-        if (diplomskiRad.getStudentIdFk().getGodinaStudija() != 4) {
+        Student student;
+        try {
+            student = studentRepository.findById(diplomskiRad.getStudentIdFk().getClanSistemaId()).get();
+            diplomskiRad.setStudentIdFk(student);
+
+        } catch (Exception e) {
+            throw new Exception("Student sa ID-jem: " + diplomskiRad.getStudentIdFk().getClanSistemaId() + " ne postoji u bazi");
+        }
+
+        if (student.getGodinaStudija() != 4) {
             throw new Exception("Ne moze se prijaviti diplomski rad za studenta koji nije na završnoj godini studija");
         }
+
         if (diplomskiRad.getTemaIdFk() == null) {
             throw new Exception("Ne moze se prijaviti diplomski rad, nije prosledjena tema");
         }
+        TemaDiplomskogRada tema;
+        try {
+            tema = temaDiplomskogRadaRepository.findById(diplomskiRad.getTemaIdFk().getTemaId()).get();
+            diplomskiRad.setTemaIdFk(tema);
+        } catch (Exception e) {
+            throw new Exception("Tema sa datim Id-jem: " + diplomskiRad.getTemaIdFk().getTemaId() + " ne postoji u bazi");
+        }
+
+        if (diplomskiRadRepository.findBytemaIdFkTemaId(diplomskiRad.getTemaIdFk().getTemaId()) != null) {
+            throw new Exception("Data tema je zauzeta.");
+        }
+
     }
 
     DiplomskiRadDTO odobri(String diplomskiRadId) throws Exception {
@@ -158,6 +191,10 @@ public class DiplomskiRadService {
             } catch (Exception e) {
                 throw new Exception("Nastavnik sa datim ID-jem: " + clan.getNastavnik() + " ne postoji u bazi!");
             }
+            if (!Arrays.asList(EnumTitula.DOCENT, EnumTitula.REDOVNI_PROFESOR, EnumTitula.VANREDNI_PROFESOR).contains(nastavnik.getTitula())) {
+                throw new Exception("Nastavnik koji je u komisiji mora imati titulu docenta, vanrednog ili redovnog profesora");
+            }
+
             if (clanKomisije.getUlogaClanaKomisije() == EnumUlogaClanaKomisije.MENTOR) {
                 mentor++;
                 if (!nastavnik.getKatedraIdFk().equals(katedra)) {
@@ -222,6 +259,19 @@ public class DiplomskiRadService {
     }
 
     List<DiplomskiRadDTO> getDiplomskiRadsForNastavnikSearch(DiplomskiRadSearchDTO diplomskiRadSearchDTO) {
+        List<EnumStatus> statuses = new ArrayList<>();
+        if ((diplomskiRadSearchDTO.getStatuses() != null)) {
+            for (String statuse : diplomskiRadSearchDTO.getStatuses()) {
+                statuses.add(EnumStatus.valueOf(statuse));
+            }
+        }
+
+        List<EnumUlogaClanaKomisije> uloge = new ArrayList<>();
+        if ((diplomskiRadSearchDTO.getUlogaClanaKomisijes() != null)) {
+            for (String statuse : diplomskiRadSearchDTO.getUlogaClanaKomisijes()) {
+                uloge.add(EnumUlogaClanaKomisije.valueOf(statuse));
+            }
+        }
         QDiplomskiRad qDiplomskiRad = QDiplomskiRad.diplomskiRad;
         QClanKomisije qClanKomisije = QClanKomisije.clanKomisije;
         Predicate exp = qDiplomskiRad.komisijaIdFk.komisijaId
@@ -229,8 +279,8 @@ public class DiplomskiRadService {
                         .select(qClanKomisije.clanKomisijePK.komisijaIdFk)
                         .from(qClanKomisije)
                         .where(qClanKomisije.nastavnikIdFk.clanSistemaId.eq(diplomskiRadSearchDTO.getNastavnikId())
-                                .and(isIn(qClanKomisije.ulogaClanaKomisije, diplomskiRadSearchDTO.getUlogaClanaKomisijes()))))
-                .and(isIn(qDiplomskiRad.status, diplomskiRadSearchDTO.getStatuses()))
+                                .and(isIn(qClanKomisije.ulogaClanaKomisije, uloge))))
+                .and(isIn(qDiplomskiRad.status, statuses))
                 .and(isLike(qDiplomskiRad.studentIdFk.ime, diplomskiRadSearchDTO.getImeStudenta()))
                 .and(isLike(qDiplomskiRad.studentIdFk.prezime, diplomskiRadSearchDTO.getPrezimeStudenta()))
                 .and(isLike(qDiplomskiRad.studentIdFk.brojIndeksa, diplomskiRadSearchDTO.getBrojIndeksa()));
@@ -258,11 +308,12 @@ public class DiplomskiRadService {
         return property.in(searchProperty);
     }
 
-    private BooleanExpression isIn(EnumPath property, String[] searchProperty) {
-        if (searchProperty == null || searchProperty.length == 0) {
+    private BooleanExpression isIn(EnumPath property, List searchProperty) {
+        if (searchProperty == null || searchProperty.isEmpty()) {
             return Expressions.asBoolean(true).isTrue();
         }
-        return property.in((Object[]) searchProperty);
+
+        return property.in(searchProperty);
     }
 
     private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {

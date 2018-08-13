@@ -15,6 +15,8 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.temaDiplomskogRada.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,8 +61,10 @@ public class StudentService {
         return mapper.studentToStudentDTO(studentRepository.findById(Long.parseLong(id)).get());
     }
 
-    StudentDTO addStudent(StudentDTO student, String id) {
-
+    StudentDTO addStudent(StudentDTO student) throws Exception {
+        validateStudent(student);
+        setBrojIndeksa(student);
+        validateStudentUniqueFields(student);
         return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
     }
 
@@ -68,7 +72,15 @@ public class StudentService {
         return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
     }
 
-    void deleteStudent(String id) {
+    void deleteStudent(String id) throws Exception {
+        Student student;
+        try {
+            student = studentRepository.findById(Long.parseLong(id)).get();
+        } catch (Exception e) {
+            throw new Exception("Student se ne moze obrisati jer ne postoji u bazi");
+            
+        }
+        if(student.getDiplomskiRadCollection() != null)throw new Exception("Studnet se ne moze obrisati jer ima prijavljen diplomski rad.");
         studentRepository.deleteById(Long.parseLong(id));
     }
 
@@ -100,5 +112,60 @@ public class StudentService {
     
     private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {
         return property.in(searchProperty);
+    }
+
+    private void validateStudent(StudentDTO student) throws Exception {
+        
+        try {
+            Long.parseLong(student.getJmbg());
+        } catch (NumberFormatException pe) {
+            throw new Exception("U polju jmbg postoje karakteri koji nisu cifre!");
+        }
+        try {
+            Long.parseLong(student.getBrojTelefona());
+        } catch (NumberFormatException pe) {
+            throw new Exception("U polju broj telefona postoje karakteri koji nisu cifre!");
+        }
+        if (student.getBrojTelefona().length() < 9 || student.getBrojTelefona().length() > 14) {
+            throw new Exception("Uneti broj telefona nije ispravan po broju cifara.");
+        }
+        if (student.getJmbg().length() != 13) {
+            throw new Exception("JMBG mora da ima 13 cifara, uneto je: " + student.getJmbg().length());
+        }
+        if (student.getIme().length() <= 2) {
+            throw new Exception("Ime sadrži manje od 3 karaktera!");
+        }
+        for (char c : student.getIme().toCharArray()) {
+            if (!Character.isLetter(c)) {
+                throw new Exception("Karakter " + c + " u imenu nije slovo!");
+            }
+        }
+        if (student.getPrezime().length() <= 2) {
+            throw new Exception("Prezime sadrži manje od 3 karaktera!");
+        }
+        for (char c : student.getPrezime().toCharArray()) {
+            if (!Character.isLetter(c)) {
+                throw new Exception("Karakter " + c + " u prezimenu nije slovo!");
+            }
+        }
+    }
+
+    private void setBrojIndeksa(StudentDTO student) {
+        String indexNo;
+        List<Student> students =  studentRepository.findByBrojIndeksaStartingWith(String.valueOf(LocalDate.now().get(ChronoField.YEAR_OF_ERA)));
+        if(student == null || students.isEmpty())indexNo = String.valueOf(LocalDate.now().get(ChronoField.YEAR_OF_ERA)) + "0001";
+        else{
+            String lastIndexNo = students.get(0).getBrojIndeksa().substring(4);
+            Integer noInt = Integer.parseInt(lastIndexNo);
+            noInt++;
+            String formattedNo = String.format("%04d", noInt);
+            indexNo = String.valueOf(LocalDate.now().get(ChronoField.YEAR_OF_ERA)) + formattedNo;
+            
+        }
+        student.setBrojIndeksa(indexNo);
+    }
+
+    private void validateStudentUniqueFields(StudentDTO student) throws Exception {
+        if(studentRepository.findByJmbg(student.getJmbg()) != null) throw new Exception("Jmbg mora biti jedinstven!");
     }
 }
