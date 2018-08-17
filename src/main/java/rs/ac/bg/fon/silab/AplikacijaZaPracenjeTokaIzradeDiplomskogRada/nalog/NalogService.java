@@ -7,15 +7,16 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nalog;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clan.ClanSistemaRepository;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanSistemaDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Radnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanSistemaDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.NalogDTO;
 
 /**
  *
@@ -51,7 +52,8 @@ public class NalogService {
         nalogRepository.deleteById(Long.parseLong(id));
     }
 
-    ClanSistemaDTO authenticate(Nalog nalog) throws Exception {
+    ClanSistemaDTO authenticate(NalogDTO nalogDTO) throws Exception {
+        Nalog nalog = mapper.nalogDTOToNalog(nalogDTO);
         Nalog nalog1 = nalogRepository.findByKorisnickoImeAndSifra(nalog.getKorisnickoIme(), nalog.getSifra());
         if (nalog1 != null) {
             if(nalog1.getClanSistema() instanceof Student)

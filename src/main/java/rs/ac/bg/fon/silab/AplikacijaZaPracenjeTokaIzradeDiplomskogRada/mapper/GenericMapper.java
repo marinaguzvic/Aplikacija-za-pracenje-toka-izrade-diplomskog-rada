@@ -8,26 +8,27 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanKaKlijentuDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanSistemaDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadOdbraniDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadPrijaviDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.NastavnikDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.PredmetDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.RadnikDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.TemaDiplomskogRadaDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Dokument;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Predmet;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Radnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanKaKlijentuDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanSistemaDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadPrijaviDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.NalogDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.NastavnikDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.PredmetDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.RadnikDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.StudentDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.TemaDiplomskogRadaDTO;
 
 /**
  *
@@ -80,6 +81,8 @@ public interface GenericMapper {
     ClanKaKlijentuDTO clanKomisijeToClanKaKlijentuDTO(ClanKomisije clanKomisije);
     @Mapping(source = "clanKomisijeRb", target = "clanKomisijePK.clanKomisijeRb")
     ClanKomisije clanKomisijeToClanKaKlijentuDTO(ClanKaKlijentuDTO clan);
+    
+    Nalog nalogDTOToNalog(NalogDTO nalog);
     
     String dokumentToString(Dokument dokument);
 }

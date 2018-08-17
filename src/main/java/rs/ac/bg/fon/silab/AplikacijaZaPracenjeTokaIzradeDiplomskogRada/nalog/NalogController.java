@@ -5,16 +5,15 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nalog;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.ClanSistemaDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema;
+import org.springframework.web.servlet.support.RequestContext;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanSistemaDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.NalogDTO;
 
 /**
  *
@@ -35,7 +34,8 @@ public class NalogController {
 //        return nalogService.getNalog(id);
 //    }
    @RequestMapping(method = RequestMethod.POST, value = "/authenticate")     
-    ClanSistemaDTO authenticate(@RequestBody Nalog nalog) throws Exception{
+    ClanSistemaDTO authenticate(@RequestBody NalogDTO nalog) throws Exception{
+       
         return nalogService.authenticate(nalog);
         
     }

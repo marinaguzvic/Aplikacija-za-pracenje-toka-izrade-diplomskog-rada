@@ -6,34 +6,28 @@
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.student;
 
 
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DatePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoField;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.temaDiplomskogRada.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-import javax.persistence.Query;
-import org.eclipse.persistence.jpa.JpaQuery;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clan.ClanSistemaRepository;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentSearchDTO;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QStudent;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.diplomskiraddtos.StudentDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.StudentSearchDTO;
 
 /**
  *
@@ -84,22 +78,26 @@ public class StudentService {
         studentRepository.deleteById(Long.parseLong(id));
     }
 
-    List<StudentDTO> searchStudents(StudentSearchDTO student) {
-        QStudent qStudent = QStudent.student;
-        Predicate predicate = isLike(qStudent.ime, student.getIme())
-                .and(isLike(qStudent.prezime, student.getPrezime()))
-                .and(isLike(qStudent.jmbg, student.getJmbg()))
-                .and(isLike(qStudent.brojTelefona, student.getBrojTelefona()))
-                .and(isLike(qStudent.brojIndeksa, student.getBrojIndeksa()))
-                .and(isEq(qStudent.datumRodjenja, student.getDatumRodjenja()))
-                .and(isInGodineStudija(qStudent.godinaStudija, student.getGodineStudija()));
-        List<Student> studennts = new ArrayList<>();
-        studentRepository.findAll(predicate).forEach(studennts::add);
-        List<StudentDTO> studentDTOs = new ArrayList<>();
-        studennts.forEach((studennt) -> {
-            studentDTOs.add(mapper.studentToStudentDTO(studennt));
-        });
-        return studentDTOs;
+    List<StudentDTO> searchStudents(StudentSearchDTO student) throws Exception {
+        try {
+            QStudent qStudent = QStudent.student;
+            Predicate predicate = isLike(qStudent.ime, student.getIme())
+                    .and(isLike(qStudent.prezime, student.getPrezime()))
+                    .and(isLike(qStudent.jmbg, student.getJmbg()))
+                    .and(isLike(qStudent.brojTelefona, student.getBrojTelefona()))
+                    .and(isLike(qStudent.brojIndeksa, student.getBrojIndeksa()))
+                    .and(isEq(qStudent.datumRodjenja, new SimpleDateFormat().parse(student.getDatumRodjenja())))
+                    .and(isInGodineStudija(qStudent.godinaStudija, student.getGodineStudija()));
+            List<Student> studennts = new ArrayList<>();
+            studentRepository.findAll(predicate).forEach(studennts::add);
+            List<StudentDTO> studentDTOs = new ArrayList<>();
+            studennts.forEach((studennt) -> {
+                studentDTOs.add(mapper.studentToStudentDTO(studennt));
+            });
+            return studentDTOs;
+        } catch (ParseException ex) {
+            throw new Exception("Greska kod parsiranja datuma");
+        }
     }
 
     BooleanExpression isLike(StringPath property, String searchProperty) {

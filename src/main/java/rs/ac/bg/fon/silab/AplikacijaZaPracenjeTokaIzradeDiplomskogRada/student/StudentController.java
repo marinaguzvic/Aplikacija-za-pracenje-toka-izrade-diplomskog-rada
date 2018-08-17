@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.StudentSearchDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.StudentDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.StudentSearchDTO;
 
 /**
  *
@@ -30,7 +30,7 @@ public class StudentController {
     }
     
         @RequestMapping(method = RequestMethod.POST, value = "/students/search")
-    public List<StudentDTO> searchStudent(@RequestBody StudentSearchDTO student) {
+    public List<StudentDTO> searchStudent(@RequestBody StudentSearchDTO student) throws Exception {
         return studentService.searchStudents(student);
     }
 

@@ -5,9 +5,6 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.diplomskirad;
 
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.komisija.*;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clankomisije.*;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nalog.*;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,16 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadDatumOdbraneDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadOdbraniDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadPrijaviDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadSearchDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dto.DiplomskiRadUnesiKomisijuDTO;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Komisija;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDatumOdbraneDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadOdbraniDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadPrijaviDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadSearchDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadUnesiKomisijuDTO;
 
 /**
  *
@@ -65,27 +59,27 @@ public class DiplomskiRadController {
         return diplomskiRadService.prijavi(diplomskiRadPrijaviDTO);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/diplomskirads/{diplomskiRadId}/odobri")
+    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}/odobri")
     public DiplomskiRadDTO odobri(@PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.odobri(diplomskiRadId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/{diplomskiRadId}/unesikomisiju")
+    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}/unesikomisiju")
     public DiplomskiRadDTO unesiKomisiju(@RequestBody DiplomskiRadUnesiKomisijuDTO diplomskiRadUnesiKomisijuDTO, @PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.unesiKomisiju(diplomskiRadUnesiKomisijuDTO, diplomskiRadId);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/diplomskirads/{diplomskiRadId}/predaj")
+    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}/predaj")
     public DiplomskiRadDTO predaj(@PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.predaj(diplomskiRadId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/{diplomskiRadId}/odbrani")
+    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}/odbrani")
     public DiplomskiRadDTO odbrani(@RequestBody DiplomskiRadOdbraniDTO diplomskiRadOdbraniDTO, @PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.odbrani(diplomskiRadOdbraniDTO, diplomskiRadId);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/{diplomskiRadId}/odredidatumodbrane")
+    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}/odredidatumodbrane")
     public DiplomskiRadDTO odrediDatumOdbrane(@RequestBody DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO, @PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.odrediDatumOdbrane(diplomskiRadDatumOdbraneDTO, diplomskiRadId);
     }
