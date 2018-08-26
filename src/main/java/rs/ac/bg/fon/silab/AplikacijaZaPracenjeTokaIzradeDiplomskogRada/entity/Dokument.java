@@ -112,7 +112,7 @@ public class Dokument implements Serializable {
 
     @Override
     public String toString() {
-        return getNazivDokumenta();
+        return dokumentPK.getDokumentRb() + ":" + getNazivDokumenta();
     }
 
     public String getTipDokumenta() {

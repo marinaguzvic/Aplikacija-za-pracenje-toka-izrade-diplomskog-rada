@@ -5,6 +5,7 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.diplomskirad;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumStatus;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumUlogaClanaKomisije;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDatumOdbraneDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadOdbraniDTO;
@@ -39,6 +42,13 @@ public class DiplomskiRadController {
     public DiplomskiRadDTO getDiplomskiRad(@PathVariable String studentId) {
         return diplomskiRadService.getDiplomskiRadByStudentId(studentId);
     }
+    
+        @RequestMapping("/diplomskiradsbyid/{id}")
+    public DiplomskiRadDTO getDiplomskiRadById(@PathVariable String id) {
+        return diplomskiRadService.getDiplomskiRad(id);
+    }
+    
+    
 
 //    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads")
 //    public void addDiplomskiRad(@RequestBody DiplomskiRad diplomskiRad) {
@@ -87,5 +97,23 @@ public class DiplomskiRadController {
     @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/search")
     public List<DiplomskiRadDTO> searchDiplomskiRads(@RequestBody DiplomskiRadSearchDTO diplomskiRadSearchDTO){
         return diplomskiRadService.getDiplomskiRadsForNastavnikSearch(diplomskiRadSearchDTO);
+    }
+    
+    @RequestMapping("/diplomskirads/statuses")
+    public List<String> getStatuses() {
+        List<String> statuses = new ArrayList<>();
+        for (EnumStatus value : EnumStatus.values()) {
+            statuses.add(value.toString());
+        }
+        return statuses;
+    }
+    
+        @RequestMapping("/diplomskirads/ulogas")
+    public List<String> getUlogas() {
+        List<String> ulogas = new ArrayList<>();
+        for (EnumUlogaClanaKomisije value : EnumUlogaClanaKomisije.values()) {
+            ulogas.add(value.toString());
+        }
+        return ulogas;
     }
 }

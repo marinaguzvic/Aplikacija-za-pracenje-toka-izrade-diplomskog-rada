@@ -7,6 +7,7 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -54,17 +55,13 @@ public class DiplomskiRad implements Serializable {
     @Column(name = "diplomski_rad_id")
     private Long diplomskiRadId;
     @Column(name = "datum_prijave")
-    @Temporal(TemporalType.DATE)
-    private Date datumPrijave;
+    private LocalDate datumPrijave;
     @Column(name = "datum_odobravanja")
-    @Temporal(TemporalType.DATE)
-    private Date datumOdobravanja;
+    private LocalDate datumOdobravanja;
     @Column(name = "datum_odbrane")
-    @Temporal(TemporalType.DATE)
-    private Date datumOdbrane;
+    private LocalDate datumOdbrane;
      @Column(name = "datum_predaje")
-    @Temporal(TemporalType.DATE)
-    private Date datumPredaje;
+    private LocalDate datumPredaje;
     @Column(name = "ocena")
     private Integer ocena;
     @Column(name = "status",length = 20)
@@ -98,27 +95,27 @@ public class DiplomskiRad implements Serializable {
         this.diplomskiRadId = diplomskiRadId;
     }
 
-    public Date getDatumPrijave() {
+    public LocalDate getDatumPrijave() {
         return datumPrijave;
     }
 
-    public void setDatumPrijave(Date datumPrijave) {
+    public void setDatumPrijave(LocalDate datumPrijave) {
         this.datumPrijave = datumPrijave;
     }
 
-    public Date getDatumOdobravanja() {
+    public LocalDate getDatumOdobravanja() {
         return datumOdobravanja;
     }
 
-    public void setDatumOdobravanja(Date datumOdobravanja) {
+    public void setDatumOdobravanja(LocalDate datumOdobravanja) {
         this.datumOdobravanja = datumOdobravanja;
     }
 
-    public Date getDatumOdbrane() {
+    public LocalDate getDatumOdbrane() {
         return datumOdbrane;
     }
 
-    public void setDatumOdbrane(Date datumOdbrane) {
+    public void setDatumOdbrane(LocalDate datumOdbrane) {
         this.datumOdbrane = datumOdbrane;
     }
 
@@ -187,11 +184,11 @@ public class DiplomskiRad implements Serializable {
         return "rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad[ diplomskiRadId=" + diplomskiRadId + " ]";
     }
 
-    public Date getDatumPredaje() {
+    public LocalDate getDatumPredaje() {
         return datumPredaje;
     }
 
-    public void setDatumPredaje(Date datumPredaje) {
+    public void setDatumPredaje(LocalDate datumPredaje) {
         this.datumPredaje = datumPredaje;
     }
 

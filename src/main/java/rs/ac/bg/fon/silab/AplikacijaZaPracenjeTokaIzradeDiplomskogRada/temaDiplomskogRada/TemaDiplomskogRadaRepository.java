@@ -8,6 +8,7 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.temaDipl
 import java.util.List;
 import javax.validation.constraints.AssertFalse;
 import org.springframework.data.repository.CrudRepository;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 
 /**
@@ -16,4 +17,5 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Te
  */
 public interface TemaDiplomskogRadaRepository extends CrudRepository<TemaDiplomskogRada, Long>{
     public List<TemaDiplomskogRada> findByNazivTeme(String nazivTeme);
+    public List<TemaDiplomskogRada> findByDiplomskiRad(DiplomskiRad dr);
 }

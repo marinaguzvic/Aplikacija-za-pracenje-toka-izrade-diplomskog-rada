@@ -15,6 +15,7 @@ import com.querydsl.core.types.dsl.StringPath;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,12 +59,21 @@ public class StudentService {
     StudentDTO addStudent(StudentDTO student) throws Exception {
         validateStudent(student);
         setBrojIndeksa(student);
+        student.setTipClana('S');
         validateStudentUniqueFields(student);
         return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
     }
 
-    StudentDTO updateStudent(StudentDTO student) {
+    StudentDTO updateStudent(StudentDTO student) throws Exception {
+        validateStudent(student);
+        try {
+            Student st = studentRepository.findById(student.getClanSistemaId()).get();
+            student.setBrojIndeksa(st.getBrojIndeksa());
         return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
+        } catch (Exception e) {
+            throw new Exception("Studen sa id-jem: " + student.getClanSistemaId() + " ne postoji");
+        }
+        
     }
 
     void deleteStudent(String id) throws Exception {
@@ -86,7 +96,6 @@ public class StudentService {
                     .and(isLike(qStudent.jmbg, student.getJmbg()))
                     .and(isLike(qStudent.brojTelefona, student.getBrojTelefona()))
                     .and(isLike(qStudent.brojIndeksa, student.getBrojIndeksa()))
-                    .and(isEq(qStudent.datumRodjenja, new SimpleDateFormat().parse(student.getDatumRodjenja())))
                     .and(isInGodineStudija(qStudent.godinaStudija, student.getGodineStudija()));
             List<Student> studennts = new ArrayList<>();
             studentRepository.findAll(predicate).forEach(studennts::add);
@@ -95,7 +104,8 @@ public class StudentService {
                 studentDTOs.add(mapper.studentToStudentDTO(studennt));
             });
             return studentDTOs;
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
+            ex.printStackTrace();
             throw new Exception("Greska kod parsiranja datuma");
         }
     }
@@ -104,11 +114,9 @@ public class StudentService {
         return searchProperty != null ? property.contains(searchProperty) : Expressions.asBoolean(true).isTrue();
     }
 
-    private BooleanExpression isEq(DatePath property, Date searchProperty) {
-        return searchProperty != null ? property.eq(searchProperty) : Expressions.asBoolean(true).isTrue();
-    }
     
     private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {
+        if(searchProperty == null || searchProperty.length == 0)return Expressions.asBoolean(true).isTrue();
         return property.in(searchProperty);
     }
 

@@ -23,6 +23,7 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.ClanKaKlijentuDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.ClanSistemaDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadPrijaviDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.DokumentDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.NalogDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.NastavnikDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.PredmetDTO;
@@ -50,9 +51,7 @@ public interface GenericMapper {
     DiplomskiRad diplomskiRadPrijaviDTOToDiplomskiRad(DiplomskiRadPrijaviDTO diplomskiRadPrijaviDTO);
 //    @Mapping(source = "clans", target = "komisijaIdFk.clanKomisijeCollection")
 //    DiplomskiRad diplomskiRadOdbraniDTOToDiplomskiRad(DiplomskiRadOdbraniDTO diplomskiRadOdbraniDTO);
-    @Mapping(source = "nastavnikIdFk.clanSistemaId", target = "nastavnik")
     ClanDTO clanKomisijeToClanDTO(ClanKomisije clan);
-    @Mapping(source = "nastavnik", target = "nastavnikIdFk.clanSistemaId")
     ClanKomisije clanDTOToClanKomisije(ClanDTO clan);
     
     @Mapping(source = "katedraIdFk.nazivKatedre", target = "katedra")
@@ -84,5 +83,6 @@ public interface GenericMapper {
     
     Nalog nalogDTOToNalog(NalogDTO nalog);
     
-    String dokumentToString(Dokument dokument);
+    @Mapping(source = "dokumentPK.dokumentRb", target = "rb")
+    DokumentDTO dokumentToDokumentDTO(Dokument dokument);
 }

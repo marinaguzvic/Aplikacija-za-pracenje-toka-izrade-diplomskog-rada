@@ -7,6 +7,7 @@ package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -68,8 +69,8 @@ public class ClanSistema implements Serializable {
     @Column(name = "broj_radne_knjizice", length = 10)
     private String brojRadneKnjizice;
     @Column(name = "datum_rodjenja")
-    @Temporal(TemporalType.DATE)
-    private Date datumRodjenja;
+//    @Temporal(TemporalType.DATE)
+    private LocalDate datumRodjenja;
     @Column(name = "tip_clana",insertable = false,updatable = false)
     private char tipClana;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "clanSistema")
@@ -133,11 +134,11 @@ public class ClanSistema implements Serializable {
 
    
 
-    public Date getDatumRodjenja() {
+    public LocalDate getDatumRodjenja() {
         return datumRodjenja;
     }
 
-    public void setDatumRodjenja(Date datumRodjenja) {
+    public void setDatumRodjenja(LocalDate datumRodjenja) {
         this.datumRodjenja = datumRodjenja;
     }
 

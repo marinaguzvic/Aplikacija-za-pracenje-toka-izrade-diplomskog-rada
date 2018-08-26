@@ -12,6 +12,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -86,7 +87,7 @@ public class DiplomskiRadService {
     DiplomskiRadDTO prijavi(DiplomskiRadPrijaviDTO diplomskiRadPrijaviDTO) throws Exception {
         DiplomskiRad diplomskiRad = mapper.diplomskiRadPrijaviDTOToDiplomskiRad(diplomskiRadPrijaviDTO);
         validatePrijavi(diplomskiRad);
-        diplomskiRad.setDatumPrijave(new Date());
+        diplomskiRad.setDatumPrijave(LocalDate.now());
         diplomskiRad.setStatus(EnumStatus.PRIJAVLJEN);
         diplomskiRad = diplomskiRadRepository.save(diplomskiRad);
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad);
@@ -140,7 +141,7 @@ public class DiplomskiRadService {
         if (diplomskiRad.getStatus() != EnumStatus.PRIJAVLJEN) {
             throw new Exception("Ne moze se odobriti rad koji nije prijavljen!");
         }
-        diplomskiRad.setDatumOdobravanja(new Date());
+        diplomskiRad.setDatumOdobravanja(LocalDate.now());
         diplomskiRad.setStatus(EnumStatus.ODOBREN);
         diplomskiRadRepository.save(diplomskiRad);
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad);
@@ -155,7 +156,7 @@ public class DiplomskiRadService {
         if (diplomskiRad.getDokumentCollection().size() < 1) {
             throw new Exception("Nema predatih dokumenata za diplomski rad!");
         }
-        diplomskiRad.setDatumPredaje(new Date());
+        diplomskiRad.setDatumPredaje(LocalDate.now());
         diplomskiRad.setStatus(EnumStatus.PREDAT);
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
     }
@@ -181,7 +182,7 @@ public class DiplomskiRadService {
             clanKomisije.setClanKomisijePK(new ClanKomisijePK(null, i));
             Nastavnik nastavnik;
             try {
-                nastavnik = nastavnikRepository.findById(clan.getNastavnik()).get();
+                nastavnik = nastavnikRepository.findById(clan.getNastavnik().getClanSistemaId()).get();
 
             } catch (Exception e) {
                 throw new Exception("Nastavnik sa datim ID-jem: " + clan.getNastavnik() + " ne postoji u bazi!");
@@ -229,10 +230,10 @@ public class DiplomskiRadService {
     DiplomskiRadDTO odrediDatumOdbrane(DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO, String diplomskiRadId) throws Exception {
         DiplomskiRad diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
 
-        if (diplomskiRad.getStatus() != EnumStatus.PREDAT || TimeUnit.DAYS.convert((diplomskiRadDatumOdbraneDTO.getDatumOdbrane().getTime() - diplomskiRad.getDatumPredaje().getTime()), TimeUnit.MILLISECONDS) < 15) {
-            throw new Exception("Rad moze da se brani po isteku 15 dana od dana predaje!");
-        }
-        diplomskiRad.setDatumOdbrane(diplomskiRadDatumOdbraneDTO.getDatumOdbrane());
+//        if (diplomskiRad.getStatus() != EnumStatus.PREDAT || TimeUnit.DAYS.convert((diplomskiRadDatumOdbraneDTO.getDatumOdbrane().getTime() - diplomskiRad.getDatumPredaje().getTime()), TimeUnit.MILLISECONDS) < 15) {
+//            throw new Exception("Rad moze da se brani po isteku 15 dana od dana predaje!");
+//        }
+        diplomskiRad.setDatumOdbrane(LocalDate.parse(diplomskiRadDatumOdbraneDTO.getDatumOdbrane()));
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
 
     }
@@ -245,7 +246,7 @@ public class DiplomskiRadService {
         if (diplomskiRadOdbraniDTO.getOcena() <= 5 || diplomskiRadOdbraniDTO.getOcena() > 10) {
             throw new Exception("Ocena iz diplomskog rada mora biti izmedju 6 i 10");
         }
-        if (diplomskiRad.getDatumOdbrane().after(new Date())) {
+        if (diplomskiRad.getDatumOdbrane().isAfter(LocalDate.now())) {
             throw new Exception("Datum odbrane ne sme biti nakon unosa ocene");
         }
         diplomskiRad.setOcena(diplomskiRadOdbraniDTO.getOcena());
@@ -313,5 +314,9 @@ public class DiplomskiRadService {
 
     private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {
         return property.in(searchProperty);
+    }
+
+    public DiplomskiRadDTO getDiplomskiRad(String id) {
+        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.findById(Long.parseLong(id)).get());
     }
 }

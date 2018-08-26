@@ -45,7 +45,8 @@ public class StudentController {
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/students/{id}")
-    public StudentDTO updateStudent(@RequestBody StudentDTO student) {
+    public StudentDTO updateStudent(@RequestBody StudentDTO student,@PathVariable String id) throws Exception {
+        student.setClanSistemaId(Long.parseLong(id));
         return studentService.updateStudent(student);
     }
     

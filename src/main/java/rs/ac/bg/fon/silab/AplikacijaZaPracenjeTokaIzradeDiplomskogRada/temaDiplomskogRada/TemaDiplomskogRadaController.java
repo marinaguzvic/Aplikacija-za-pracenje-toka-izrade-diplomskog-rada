@@ -39,12 +39,12 @@ public class TemaDiplomskogRadaController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/temadiplomskogradas")
-    public TemaDiplomskogRadaDTO addTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema) {
+    public TemaDiplomskogRadaDTO addTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema) throws Exception {
         return temaDiplomskogRadaService.addTemaDiplomskogRada(tema);
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/temadiplomskogradas/{id}")
-    public TemaDiplomskogRadaDTO updateCourse(@RequestBody TemaDiplomskogRadaDTO tema,@PathVariable String id) {
+    public TemaDiplomskogRadaDTO updateTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema,@PathVariable String id) throws Exception {
         tema.setTemaId(Long.parseLong(id));
         return temaDiplomskogRadaService.updateTemaDiplomskogRada(tema);
     }
@@ -53,5 +53,10 @@ public class TemaDiplomskogRadaController {
     public void deleteTemaDiplomskogRada(@PathVariable String id) throws Exception {
         
         temaDiplomskogRadaService.deleteTemaDiplomskogRada(id);
+    }
+    
+    @RequestMapping("/temadiplomskogradas/free")
+    public List<TemaDiplomskogRadaDTO> getFreeTemaDiplomskogRadas() {
+        return temaDiplomskogRadaService.getFreeTeme();
     }
 }
