@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumStatus;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumUlogaClanaKomisije;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanKaKlijentuDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDatumOdbraneDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadOdbraniDTO;
@@ -42,13 +44,11 @@ public class DiplomskiRadController {
     public DiplomskiRadDTO getDiplomskiRad(@PathVariable String studentId) {
         return diplomskiRadService.getDiplomskiRadByStudentId(studentId);
     }
-    
-        @RequestMapping("/diplomskiradsbyid/{id}")
+
+    @RequestMapping("/diplomskiradsbyid/{id}")
     public DiplomskiRadDTO getDiplomskiRadById(@PathVariable String id) {
         return diplomskiRadService.getDiplomskiRad(id);
     }
-    
-    
 
 //    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads")
 //    public void addDiplomskiRad(@RequestBody DiplomskiRad diplomskiRad) {
@@ -93,12 +93,12 @@ public class DiplomskiRadController {
     public DiplomskiRadDTO odrediDatumOdbrane(@RequestBody DiplomskiRadDatumOdbraneDTO diplomskiRadDatumOdbraneDTO, @PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.odrediDatumOdbrane(diplomskiRadDatumOdbraneDTO, diplomskiRadId);
     }
-    
+
     @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/search")
-    public List<DiplomskiRadDTO> searchDiplomskiRads(@RequestBody DiplomskiRadSearchDTO diplomskiRadSearchDTO){
+    public List<DiplomskiRadDTO> searchDiplomskiRads(@RequestBody DiplomskiRadSearchDTO diplomskiRadSearchDTO) {
         return diplomskiRadService.getDiplomskiRadsForNastavnikSearch(diplomskiRadSearchDTO);
     }
-    
+
     @RequestMapping("/diplomskirads/statuses")
     public List<String> getStatuses() {
         List<String> statuses = new ArrayList<>();
@@ -107,13 +107,18 @@ public class DiplomskiRadController {
         }
         return statuses;
     }
-    
-        @RequestMapping("/diplomskirads/ulogas")
+
+    @RequestMapping("/diplomskirads/ulogas")
     public List<String> getUlogas() {
         List<String> ulogas = new ArrayList<>();
         for (EnumUlogaClanaKomisije value : EnumUlogaClanaKomisije.values()) {
             ulogas.add(value.toString());
         }
         return ulogas;
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}/promeniclana")
+    public DiplomskiRadDTO promeniClanaKomisije(@RequestBody ClanKaKlijentuDTO clanDTO, @PathVariable String diplomskiRadId) throws Exception {
+        return diplomskiRadService.promeniClanaKomisije(clanDTO,diplomskiRadId);
     }
 }

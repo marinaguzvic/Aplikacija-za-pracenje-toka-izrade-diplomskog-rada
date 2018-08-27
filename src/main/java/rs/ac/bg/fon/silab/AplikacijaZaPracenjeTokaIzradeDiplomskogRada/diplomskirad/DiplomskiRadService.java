@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nastavnik
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.student.StudentRepository;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.temaDiplomskogRada.TemaDiplomskogRadaRepository;
 import rs.ac.bg.fon.silab.diplomskiraddtos.ClanDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.ClanKaKlijentuDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDatumOdbraneDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadOdbraniDTO;
@@ -215,14 +217,17 @@ public class DiplomskiRadService {
         if (!saDrugeKatedre) {
             throw new Exception("U komisiji mora biti barem jedan nastavnik koji nije sa katedre na kojoj je radjen diplomski rad!");
         }
+        //komisija.setClanKomisijeCollection(clanKomisijes);
         diplomskiRad.setKomisijaIdFk(komisija);
+        diplomskiRad.setStatus(EnumStatus.ODREDJENA_KOMISIJA);
         diplomskiRad = diplomskiRadRepository.save(diplomskiRad);
+        
         for (ClanKomisije clanKomisije : clanKomisijes) {
             clanKomisije.getClanKomisijePK().setKomisijaIdFk(diplomskiRad.getKomisijaIdFk().getKomisijaId());
+            clanKomisije.setKomisija(diplomskiRad.getKomisijaIdFk());
         }
-        komisija.setClanKomisijeCollection(clanKomisijes);
-        diplomskiRad.setStatus(EnumStatus.ODREDJENA_KOMISIJA);
-        diplomskiRad.setKomisijaIdFk(komisija);
+        diplomskiRad.getKomisijaIdFk().setClanKomisijeCollection(clanKomisijes);
+        
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
 
     }
@@ -318,5 +323,51 @@ public class DiplomskiRadService {
 
     public DiplomskiRadDTO getDiplomskiRad(String id) {
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.findById(Long.parseLong(id)).get());
+    }
+
+    DiplomskiRadDTO promeniClanaKomisije(ClanKaKlijentuDTO clanDTO,String diplomskiRadId) throws Exception {
+        DiplomskiRad diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
+        //validateKomisija(diplomskiRadUnesiKomisijuDTO, diplomskiRad);
+
+        if (diplomskiRad.getStatus() != EnumStatus.ODREDJENA_KOMISIJA && diplomskiRad.getStatus() != EnumStatus.PREDAT) {
+            throw new Exception("Ne moze se menjati komisija za rad za koji nije odredjena komisija!");
+        }
+        Nastavnik nastavnik;
+        try {
+                nastavnik = nastavnikRepository.findById(clanDTO.getNastavnikIdFk().getClanSistemaId()).get();
+
+            } catch (Exception e) {
+                throw new Exception("Nastavnik sa datim ID-jem: " + clanDTO.getNastavnikIdFk() + " ne postoji u bazi!");
+            }
+            if (!Arrays.asList(EnumTitula.DOCENT, EnumTitula.REDOVNI_PROFESOR, EnumTitula.VANREDNI_PROFESOR).contains(nastavnik.getTitula())) {
+                throw new Exception("Nastavnik koji je u komisiji mora imati titulu docenta, vanrednog ili redovnog profesora");
+            }
+        for (ClanKomisije clanKomisije : diplomskiRad.getKomisijaIdFk().getClanKomisijeCollection()) {
+            if(clanKomisije.getClanKomisijePK().getClanKomisijeRb() == clanDTO.getClanKomisijeRb()){
+                clanKomisije.setNastavnikIdFk(nastavnik);
+            }else{
+                if(Objects.equals(clanKomisije.getNastavnikIdFk().getClanSistemaId(), clanDTO.getNastavnikIdFk().getClanSistemaId())){
+                    throw new Exception("Ne smeju biti dva člana sa istim nastavnicima");
+                }
+            }
+        }
+        boolean saDrugeKatedre = false;
+        Katedra katedra = diplomskiRad.getTemaIdFk().getPredmetIdFk().getKatedraIdFk();
+        
+        for (ClanKomisije clanKomisije : diplomskiRad.getKomisijaIdFk().getClanKomisijeCollection()) {
+            if (clanKomisije.getUlogaClanaKomisije() == EnumUlogaClanaKomisije.MENTOR) {
+                if (!clanKomisije.getNastavnikIdFk().getKatedraIdFk().equals(katedra)) {
+                    throw new Exception("Mentor mora biti sa katedre ciji je i predmet");
+                }
+            } else if (!nastavnik.getKatedraIdFk().equals(katedra)) {
+                saDrugeKatedre = true;
+            }
+        }
+        
+        if (!saDrugeKatedre) {
+            throw new Exception("U komisiji mora biti barem jedan nastavnik koji nije sa katedre na kojoj je radjen diplomski rad!");
+        }
+       
+        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
     }
 }

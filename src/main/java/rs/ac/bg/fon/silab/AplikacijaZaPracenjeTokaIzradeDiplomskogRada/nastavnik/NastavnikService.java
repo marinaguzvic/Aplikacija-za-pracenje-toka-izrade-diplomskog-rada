@@ -15,6 +15,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanKomisije;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumTitula;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumZvanje;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
@@ -97,6 +99,18 @@ public class NastavnikService {
      
     private BooleanExpression isInGodineStudija(NumberPath property, Integer[] searchProperty) {
         return property.in(searchProperty);
+    }
+
+    List<NastavnikDTO> getAllNastavniksForKomisija() {
+        List<Nastavnik> nastavniks = new ArrayList<>();
+        nastavnikRepository.findAll().forEach(nastavniks::add);
+        List<NastavnikDTO> nastavnikDTOs = new ArrayList<>();
+        for (Nastavnik nastavnik : nastavniks) {
+            if(nastavnik.getTitula().equals(EnumTitula.DOCENT) || nastavnik.getTitula().equals(EnumTitula.REDOVNI_PROFESOR) || nastavnik.getTitula().equals(EnumTitula.VANREDNI_PROFESOR)){
+                nastavnikDTOs.add(mapper.nastavnikToNastavnikDTO(nastavnik));
+            }
+        }
+        return nastavnikDTOs;
     }
 
 }

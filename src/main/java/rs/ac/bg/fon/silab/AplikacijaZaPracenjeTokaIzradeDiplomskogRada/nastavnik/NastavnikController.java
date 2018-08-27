@@ -29,6 +29,11 @@ public class NastavnikController {
     public List<NastavnikDTO> getAllNastavniks() {
         return nastavnikService.getAllNastavniks();
     }
+    
+    @RequestMapping("/nastavniks/komisija")
+    public List<NastavnikDTO> getAllNastavniksForKomisija() {
+        return nastavnikService.getAllNastavniksForKomisija();
+    }
 
     @RequestMapping("/nastavniks/{id}")
     public NastavnikDTO getNastavnik(@PathVariable String id) {
