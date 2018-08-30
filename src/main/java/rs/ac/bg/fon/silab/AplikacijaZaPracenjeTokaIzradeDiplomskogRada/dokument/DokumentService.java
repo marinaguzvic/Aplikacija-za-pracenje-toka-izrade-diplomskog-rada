@@ -5,21 +5,18 @@
  */
 package rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.dokument;
 
-import java.io.IOException;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.clan.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.diplomskirad.DiplomskiRadRepository;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Dokument;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DokumentPK;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumStatus;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.service.AbstractService;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 
 /**
@@ -27,7 +24,7 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
  * @author Marina Guzvic
  */
 @Service
-public class DokumentService{
+public class DokumentService extends AbstractService{
 
     @Autowired
     DokumentRepository dokumentRepository;
@@ -40,8 +37,8 @@ public class DokumentService{
 //        return dokumentRepository.findByDokumentPKDiplomskiRadIdFk(Long.parseLong(diplomskiRadId));
 //    }
 //
-    Dokument getDokument(String diplomskiRadId, String dokumentId) throws Exception {
-        return dokumentRepository.findById(new DokumentPK(Long.parseLong(diplomskiRadId), Integer.parseInt(dokumentId))).orElseThrow(() -> new Exception("Dokument nije pronadjen"));
+    public Dokument getDokument(String [] ids) throws Exception {
+        return dokumentRepository.findById(new DokumentPK(Long.parseLong(ids[0]), Integer.parseInt(ids[1]))).orElseThrow(() -> new Exception("Dokument nije pronadjen"));
 //        return dokumentRepository.findById(new DokumentPK(Long.parseLong(diplomskiRadId), Integer.parseInt(dokumentId))).get();
     }
 
@@ -81,8 +78,46 @@ public class DokumentService{
         }
     }
 
-    void deleteDokument(String diplomskiRadId, String dokumentId) {
-        dokumentRepository.deleteById(new DokumentPK(Long.parseLong(diplomskiRadId), Integer.parseInt(dokumentId)));
+    @Override
+    public AbstractDTO delete(String [] ids) throws Exception {
+        Dokument dokument;
+        try {
+            dokument = dokumentRepository.findById(new DokumentPK(Long.parseLong(ids[0]), Integer.parseInt(ids[1]))).get();
+        } catch (Exception e) {
+            throw new Exception("Ne postoji dokument pod datim url-om");
+        }
+        if(dokument.getDiplomskiRad().getStatus() != EnumStatus.ODREDJENA_KOMISIJA)throw new Exception("Više nije dozvoljeno brisanje dokumenta za diplomski rad");
+        try {
+            dokumentRepository.deleteById(new DokumentPK(Long.parseLong(ids[0]), Integer.parseInt(ids[1])));
+        } catch (Exception e) {
+            throw new Exception("Brisanje dokumenta nije uspelo");
+        }
+        return mapper.dokumentToDokumentDTO(dokument);
+    }
+
+    @Override
+    public List<AbstractDTO> getAll(String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AbstractDTO add(AbstractDTO dto, String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AbstractDTO update(AbstractDTO dto, String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<AbstractDTO> search(AbstractDTO search) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AbstractDTO get(String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

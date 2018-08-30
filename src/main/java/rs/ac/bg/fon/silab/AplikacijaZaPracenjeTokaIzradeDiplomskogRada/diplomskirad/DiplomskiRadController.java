@@ -107,4 +107,9 @@ public class DiplomskiRadController {
     public DiplomskiRadDTO promeniClanaKomisije(@RequestBody ClanKaKlijentuDTO clanDTO, @PathVariable String diplomskiRadId) throws Exception {
         return diplomskiRadService.promeniClanaKomisije(clanDTO,diplomskiRadId);
     }
+    
+    @RequestMapping(method = RequestMethod.DELETE, value = "/diplomskirads/{id}")
+    public AbstractDTO delete(@PathVariable String id) throws Exception{
+        return diplomskiRadService.delete(new String[]{id});
+    }
 }

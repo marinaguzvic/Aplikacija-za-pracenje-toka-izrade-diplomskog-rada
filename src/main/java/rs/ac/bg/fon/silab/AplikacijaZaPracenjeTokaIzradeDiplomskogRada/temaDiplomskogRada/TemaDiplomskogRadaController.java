@@ -52,7 +52,6 @@ public class TemaDiplomskogRadaController {
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/temadiplomskogradas/{id}")
     public AbstractDTO deleteTemaDiplomskogRada(@PathVariable String id) throws Exception {
-        
         return temaDiplomskogRadaService.delete(new String[]{id});
     }
     

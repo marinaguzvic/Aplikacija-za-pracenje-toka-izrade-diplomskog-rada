@@ -402,6 +402,15 @@ public class DiplomskiRadService extends AbstractService{
 
     @Override
     public AbstractDTO delete(String[] ids) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        DiplomskiRad diplomskiRad;
+        try {
+            diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(ids[0])).get();
+            if(diplomskiRad == null)throw new Exception();
+        } catch (Exception e) {
+            throw new Exception("Ne postoji diplomski rad sa datim id-jem: " + ids[0]);
+        }
+        if(diplomskiRad.getStatus() != EnumStatus.PRIJAVLJEN)throw new Exception("Brisanje diplomskog rada koji je odobren nije dozvoljeno");
+        diplomskiRadRepository.deleteById(Long.parseLong(ids[0]));
+        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad);
     }
 }
