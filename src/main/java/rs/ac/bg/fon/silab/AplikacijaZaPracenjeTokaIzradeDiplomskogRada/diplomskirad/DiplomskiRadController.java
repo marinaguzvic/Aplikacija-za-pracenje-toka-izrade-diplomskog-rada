@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumStatus;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumUlogaClanaKomisije;
-import rs.ac.bg.fon.silab.diplomskiraddtos.ClanDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.ClanKaKlijentuDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDatumOdbraneDTO;
@@ -36,13 +35,13 @@ public class DiplomskiRadController {
     private DiplomskiRadService diplomskiRadService;
 
     @RequestMapping("/diplomskirads")
-    public List<DiplomskiRad> getAllDiplomskiRads() {
-        return diplomskiRadService.getAllDiplomskiRads();
+    public List<AbstractDTO> getAllDiplomskiRads() {
+        return diplomskiRadService.getAll(new String[]{});
     }
 
     @RequestMapping("/diplomskirads/{studentId}")
-    public DiplomskiRadDTO getDiplomskiRad(@PathVariable String studentId) {
-        return diplomskiRadService.getDiplomskiRadByStudentId(studentId);
+    public AbstractDTO get(@PathVariable String studentId) {
+        return diplomskiRadService.get(new String[]{studentId});
     }
 
     @RequestMapping("/diplomskiradsbyid/{id}")
@@ -50,20 +49,7 @@ public class DiplomskiRadController {
         return diplomskiRadService.getDiplomskiRad(id);
     }
 
-//    @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads")
-//    public void addDiplomskiRad(@RequestBody DiplomskiRad diplomskiRad) {
-//        diplomskiRadService.addDiplomskiRad(diplomskiRad);
-//    }
-//    
-//    @RequestMapping(method = RequestMethod.PUT, value = "/diplomskirads/{diplomskiRadId}")
-//    public void updateDiplomskiRad(@RequestBody DiplomskiRad diplomskiRad) {
-//        diplomskiRadService.updateDiplomskiRad(diplomskiRad);
-//    }
-//    
-//    @RequestMapping(method = RequestMethod.DELETE,value = "/diplomskirads/{diplomskiRadId}")
-//    public void deleteDiplomskiRad(@PathVariable String diplomskiRadId) {
-//        diplomskiRadService.deleteDiplomskiRad(diplomskiRadId);
-//    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/prijavi")
     public DiplomskiRadDTO prijavi(@RequestBody DiplomskiRadPrijaviDTO diplomskiRadPrijaviDTO) throws Exception {
         return diplomskiRadService.prijavi(diplomskiRadPrijaviDTO);
@@ -95,8 +81,8 @@ public class DiplomskiRadController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/diplomskirads/search")
-    public List<DiplomskiRadDTO> searchDiplomskiRads(@RequestBody DiplomskiRadSearchDTO diplomskiRadSearchDTO) {
-        return diplomskiRadService.getDiplomskiRadsForNastavnikSearch(diplomskiRadSearchDTO);
+    public List<AbstractDTO> searchDiplomskiRads(@RequestBody DiplomskiRadSearchDTO diplomskiRadSearchDTO) {
+        return diplomskiRadService.search(diplomskiRadSearchDTO);
     }
 
     @RequestMapping("/diplomskirads/statuses")

@@ -12,6 +12,7 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Cl
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.ClanSistema;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.DiplomskiRad;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Dokument;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Katedra;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nalog;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Predmet;
@@ -24,6 +25,7 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.ClanSistemaDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadPrijaviDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DokumentDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.KatedraDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.NalogDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.NastavnikDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.PredmetDTO;
@@ -85,4 +87,7 @@ public interface GenericMapper {
     
     @Mapping(source = "dokumentPK.dokumentRb", target = "rb")
     DokumentDTO dokumentToDokumentDTO(Dokument dokument);
+    
+    KatedraDTO katedraToKatedraDTO(Katedra katedra);
+    Katedra katedraDTOToKatedra(KatedraDTO katedra);
 }

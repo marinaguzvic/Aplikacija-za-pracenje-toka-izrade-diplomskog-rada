@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Student;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.QStudent;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.service.AbstractService;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.StudentDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.StudentSearchDTO;
 
@@ -35,28 +37,37 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.StudentSearchDTO;
  * @author Marina Guzvic
  */
 @Service
-public class StudentService {
+public class StudentService extends AbstractService{
 
     @Autowired
     StudentRepository studentRepository;
     @Autowired
     GenericMapper mapper;
 
-    public List<StudentDTO> getAllStudents() {
+    @Override
+    public List<AbstractDTO> getAll(String [] ids) {
         List<Student> students = new ArrayList<>();
         studentRepository.findAll().forEach(students::add);
-        List<StudentDTO> studentDTOs = new ArrayList<>();
+        List<AbstractDTO> studentDTOs = new ArrayList<>();
         for (Student student : students) {
             studentDTOs.add(mapper.studentToStudentDTO(student));
         }
         return studentDTOs;
     }
 
-    public StudentDTO getStudent(String id) {
-        return mapper.studentToStudentDTO(studentRepository.findById(Long.parseLong(id)).get());
+    /**
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public AbstractDTO get(String [] ids) {
+        return mapper.studentToStudentDTO(studentRepository.findById(Long.parseLong(ids[0])).get());
     }
 
-    StudentDTO addStudent(StudentDTO student) throws Exception {
+    @Override
+    public AbstractDTO add(AbstractDTO dto,String [] ids) throws Exception {
+        StudentDTO student = (StudentDTO)dto;
         validateStudent(student);
         setBrojIndeksa(student);
         student.setTipClana('S');
@@ -64,7 +75,9 @@ public class StudentService {
         return mapper.studentToStudentDTO(studentRepository.save(mapper.studentDTOToStudent(student)));
     }
 
-    StudentDTO updateStudent(StudentDTO student) throws Exception {
+    @Override
+    public AbstractDTO update(AbstractDTO dto,String [] ids) throws Exception {
+        StudentDTO student = (StudentDTO)dto;
         validateStudent(student);
         try {
             Student st = studentRepository.findById(student.getClanSistemaId()).get();
@@ -76,19 +89,23 @@ public class StudentService {
         
     }
 
-    void deleteStudent(String id) throws Exception {
+    @Override
+    public AbstractDTO delete(String [] ids) throws Exception {
         Student student;
         try {
-            student = studentRepository.findById(Long.parseLong(id)).get();
+            student = studentRepository.findById(Long.parseLong(ids[0])).get();
         } catch (Exception e) {
             throw new Exception("Student se ne moze obrisati jer ne postoji u bazi");
             
         }
         if(student.getDiplomskiRadCollection() != null)throw new Exception("Studnet se ne moze obrisati jer ima prijavljen diplomski rad.");
-        studentRepository.deleteById(Long.parseLong(id));
+        studentRepository.deleteById(Long.parseLong(ids[0]));
+        return mapper.studentToStudentDTO(student);
     }
 
-    List<StudentDTO> searchStudents(StudentSearchDTO student) throws Exception {
+    @Override
+    public List<AbstractDTO> search(AbstractDTO dto) throws Exception {
+        StudentSearchDTO student = (StudentSearchDTO)dto;
         try {
             QStudent qStudent = QStudent.student;
             Predicate predicate = isLike(qStudent.ime, student.getIme())
@@ -99,7 +116,7 @@ public class StudentService {
                     .and(isInGodineStudija(qStudent.godinaStudija, student.getGodineStudija()));
             List<Student> studennts = new ArrayList<>();
             studentRepository.findAll(predicate).forEach(studennts::add);
-            List<StudentDTO> studentDTOs = new ArrayList<>();
+            List<AbstractDTO> studentDTOs = new ArrayList<>();
             studennts.forEach((studennt) -> {
                 studentDTOs.add(mapper.studentToStudentDTO(studennt));
             });

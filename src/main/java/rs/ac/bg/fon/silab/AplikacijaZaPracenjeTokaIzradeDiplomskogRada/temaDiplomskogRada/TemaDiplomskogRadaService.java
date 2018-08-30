@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.service.AbstractService;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.TemaDiplomskogRadaDTO;
 
 /**
@@ -18,33 +20,44 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.TemaDiplomskogRadaDTO;
  * @author Marina Guzvic
  */
 @Service
-public class TemaDiplomskogRadaService {
+public class TemaDiplomskogRadaService extends AbstractService{
 
     @Autowired
     TemaDiplomskogRadaRepository temaDiplomskogRadaRepository;
     @Autowired
     GenericMapper mapper;
 
-    public List<TemaDiplomskogRadaDTO> getAllTeme() {
+    @Override
+    public List<AbstractDTO> getAll(String [] ids) {
         List<TemaDiplomskogRada> teme = new ArrayList<>();
         temaDiplomskogRadaRepository.findAll().forEach(teme::add);
-        List<TemaDiplomskogRadaDTO> temaDTOs = new ArrayList<>();
-        for (TemaDiplomskogRada temaDiplomskogRada : teme) {
+        List<AbstractDTO> temaDTOs = new ArrayList<>();
+        teme.forEach((temaDiplomskogRada) -> {
             temaDTOs.add(mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(temaDiplomskogRada));
-        }
+        });
         return temaDTOs;
     }
 
-    public TemaDiplomskogRadaDTO getTemaDiplomskogRada(String id) throws Exception {
+    @Override
+    public AbstractDTO get(String [] ids) throws Exception {
         try {
-            return mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(temaDiplomskogRadaRepository.findById(Long.parseLong(id)).get());
+            return mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(temaDiplomskogRadaRepository.findById(Long.parseLong(ids[0])).get());
         } catch (Exception e) {
-            throw new Exception("Ne postoji tema sa ID-jem: " + id);
+            throw new Exception("Ne postoji tema sa ID-jem: " + ids[0]);
         }
 
     }
 
-    TemaDiplomskogRadaDTO addTemaDiplomskogRada(TemaDiplomskogRadaDTO tema) throws Exception {
+    /**
+     *
+     * @param dto
+     * @param ids
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public AbstractDTO add(AbstractDTO dto, String [] ids) throws Exception {
+        TemaDiplomskogRadaDTO tema = (TemaDiplomskogRadaDTO)dto;
         if (tema.getNazivTeme() == null || tema.getNazivTeme().length() < 10) {
             throw new Exception("Naziv teme nije ispravan");
         }
@@ -54,7 +67,10 @@ public class TemaDiplomskogRadaService {
         return mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(temaDiplomskogRadaRepository.save(mapper.temaDiplomskogRadaDTOToTemaDiplomskogRada(tema)));
     }
 
-    TemaDiplomskogRadaDTO updateTemaDiplomskogRada(TemaDiplomskogRadaDTO tema) throws Exception {
+    @Override
+    public AbstractDTO update(AbstractDTO dto, String [] ids) throws Exception {
+        TemaDiplomskogRadaDTO tema = (TemaDiplomskogRadaDTO)dto;
+        tema.setTemaId(Long.parseLong(ids[0]));
         try {
             TemaDiplomskogRada t = temaDiplomskogRadaRepository.findById(tema.getTemaId()).get();
 
@@ -71,18 +87,20 @@ public class TemaDiplomskogRadaService {
 
     }
 
-    void deleteTemaDiplomskogRada(String id) throws Exception {
+    @Override
+    public AbstractDTO delete(String [] ids) throws Exception {
         TemaDiplomskogRada tema;
         try {
-            tema = temaDiplomskogRadaRepository.findById(Long.parseLong(id)).get();
+            tema = temaDiplomskogRadaRepository.findById(Long.parseLong(ids[0])).get();
+            if(tema == null) throw new Exception();
         } catch (Exception e) {
             throw new Exception("Tema se ne moze obrisati jer ne postoji u bazi");
-
         }
         if (tema.getDiplomskiRad() != null) {
             throw new Exception("Tema se ne moze obrisati jer ima prijavljen diplomski rad.");
         }
-        temaDiplomskogRadaRepository.deleteById(Long.parseLong(id));
+        temaDiplomskogRadaRepository.deleteById(Long.parseLong(ids[0]));
+        return mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(tema);
     }
 
     List<TemaDiplomskogRadaDTO> getTemaDiplomskogRadasByNazivTeme(String nazivTeme) {
@@ -103,6 +121,11 @@ public class TemaDiplomskogRadaService {
             temaDTOs.add(mapper.temaDiplomskogRadaToTemaDiplomskogRadaDTO(tema));
         });
         return temaDTOs;
+    }
+
+    @Override
+    public List<AbstractDTO> search(AbstractDTO search) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

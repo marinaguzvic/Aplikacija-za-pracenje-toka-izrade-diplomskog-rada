@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.TemaDiplomskogRadaDTO;
 
 /**
@@ -24,8 +25,8 @@ public class TemaDiplomskogRadaController {
     private TemaDiplomskogRadaService temaDiplomskogRadaService;
 
     @RequestMapping("/temadiplomskogradas")
-    public List<TemaDiplomskogRadaDTO> getAllTemaDiplomskogRadas() {
-        return temaDiplomskogRadaService.getAllTeme();
+    public List<AbstractDTO> getAllTemaDiplomskogRadas() {
+        return temaDiplomskogRadaService.getAll(new String[]{});
     }
     
     @RequestMapping("/temadiplomskogradas/search/{nazivTeme}")
@@ -34,25 +35,25 @@ public class TemaDiplomskogRadaController {
     }
 
     @RequestMapping("/temadiplomskogradas/{id}")
-    public TemaDiplomskogRadaDTO getTemaDiplomskogRada(@PathVariable String id) throws Exception {
-        return temaDiplomskogRadaService.getTemaDiplomskogRada(id);
+    public AbstractDTO getTemaDiplomskogRada(@PathVariable String id) throws Exception {
+        return temaDiplomskogRadaService.get(new String[]{id});
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/temadiplomskogradas")
-    public TemaDiplomskogRadaDTO addTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema) throws Exception {
-        return temaDiplomskogRadaService.addTemaDiplomskogRada(tema);
+    public AbstractDTO addTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema) throws Exception {
+        return temaDiplomskogRadaService.add(tema,new String[]{});
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/temadiplomskogradas/{id}")
-    public TemaDiplomskogRadaDTO updateTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema,@PathVariable String id) throws Exception {
+    public AbstractDTO updateTemaDiplomskogRada(@RequestBody TemaDiplomskogRadaDTO tema,@PathVariable String id) throws Exception {
         tema.setTemaId(Long.parseLong(id));
-        return temaDiplomskogRadaService.updateTemaDiplomskogRada(tema);
+        return temaDiplomskogRadaService.update(tema,new String[]{id});
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/temadiplomskogradas/{id}")
-    public void deleteTemaDiplomskogRada(@PathVariable String id) throws Exception {
+    public AbstractDTO deleteTemaDiplomskogRada(@PathVariable String id) throws Exception {
         
-        temaDiplomskogRadaService.deleteTemaDiplomskogRada(id);
+        return temaDiplomskogRadaService.delete(new String[]{id});
     }
     
     @RequestMapping("/temadiplomskogradas/free")

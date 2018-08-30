@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Katedra;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 
 /**
  *
@@ -24,13 +25,13 @@ public class KatedraController {
     private KatedraService katedraService;
 
     @RequestMapping("/katedras")
-    public List<Katedra> getAllKatedras() {
-        return katedraService.getAllKatedras();
+    public List<AbstractDTO> getAllKatedras() {
+        return katedraService.getAll(new String[]{});
     }
 
     @RequestMapping("/katedras/{katedraId}")
-    public Katedra getKatedra(@PathVariable String katedraId) {
-        return katedraService.getKatedra(katedraId);
+    public AbstractDTO getKatedra(@PathVariable String katedraId) throws Exception {
+        return katedraService.get(new String[]{katedraId});
     }
 
     

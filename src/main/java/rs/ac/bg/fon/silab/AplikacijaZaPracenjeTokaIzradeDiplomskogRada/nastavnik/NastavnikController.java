@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.NastavnikDTO;
 
@@ -26,8 +27,8 @@ public class NastavnikController {
     GenericMapper mapper;
 
     @RequestMapping("/nastavniks")
-    public List<NastavnikDTO> getAllNastavniks() {
-        return nastavnikService.getAllNastavniks();
+    public List<AbstractDTO> getAllNastavniks() {
+        return nastavnikService.getAll(new String[]{});
     }
     
     @RequestMapping("/nastavniks/komisija")
@@ -36,24 +37,9 @@ public class NastavnikController {
     }
 
     @RequestMapping("/nastavniks/{id}")
-    public NastavnikDTO getNastavnik(@PathVariable String id) {
-        return nastavnikService.getNastavnik(id);
+    public AbstractDTO getNastavnik(@PathVariable String id) {
+        return nastavnikService.get(new String[]{id});
     }
-
-//    @RequestMapping(method = RequestMethod.POST, value = "/nastavniks/{id}")
-//    public NastavnikDTO addNastavnik(@RequestBody NastavnikDTO nastavnik) {
-//        return nastavnikService.addNastavnik(nastavnik);
-//    }
-//    
-//    @RequestMapping(method = RequestMethod.PUT, value = "/nastavniks/{id}")
-//    public NastavnikDTO updateNastavnik(@RequestBody NastavnikDTO nastavnik,@PathVariable String id) {
-//        return nastavnikService.updateNastavnik(nastavnik);
-//    }
-//    
-//    @RequestMapping(method = RequestMethod.DELETE,value = "/nastavniks/{id}")
-//    public void deleteNastavnik(@PathVariable String id) throws Exception {
-//        nastavnikService.deleteNastavnik(id);
-//    }
     
     @RequestMapping("/nastavniks/{id}/diplomskirads")
     public List<DiplomskiRadDTO> getDiplomskiRadsForNastavnik(@PathVariable String id){

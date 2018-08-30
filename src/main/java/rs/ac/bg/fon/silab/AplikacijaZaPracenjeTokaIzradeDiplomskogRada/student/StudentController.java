@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.StudentDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.StudentSearchDTO;
 
@@ -25,34 +26,33 @@ public class StudentController {
     private StudentService studentService;
 
     @RequestMapping("/students")
-    public List<StudentDTO> getAllStudents() {
-        return studentService.getAllStudents();
+    public List<AbstractDTO> getAllStudents() {
+        return studentService.getAll(new String[]{});
     }
     
-        @RequestMapping(method = RequestMethod.POST, value = "/students/search")
-    public List<StudentDTO> searchStudent(@RequestBody StudentSearchDTO student) throws Exception {
-        return studentService.searchStudents(student);
+    @RequestMapping(method = RequestMethod.POST, value = "/students/search")
+    public List<AbstractDTO> searchStudent(@RequestBody StudentSearchDTO student) throws Exception {
+        return studentService.search(student);
     }
 
     @RequestMapping("/students/{id}")
-    public StudentDTO getStudent(@PathVariable String id) {
-        return studentService.getStudent(id);
+    public AbstractDTO getStudent(@PathVariable String id) {
+        return studentService.get(new String[]{id});
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/students")
-    public StudentDTO addStudent(@RequestBody StudentDTO student) throws Exception {
-        return studentService.addStudent(student);
+    public AbstractDTO addStudent(@RequestBody StudentDTO student) throws Exception {
+        return studentService.add(student,new String[]{});
     }
     
     @RequestMapping(method = RequestMethod.PUT, value = "/students/{id}")
-    public StudentDTO updateStudent(@RequestBody StudentDTO student,@PathVariable String id) throws Exception {
+    public AbstractDTO updateStudent(@RequestBody StudentDTO student,@PathVariable String id) throws Exception {
         student.setClanSistemaId(Long.parseLong(id));
-        return studentService.updateStudent(student);
+        return studentService.update(student,new String[]{id});
     }
     
     @RequestMapping(method = RequestMethod.DELETE,value = "/students/{id}")
-    public void deleteStudent(@PathVariable String id) throws Exception {
-        
-        studentService.deleteStudent(id);
+    public AbstractDTO deleteStudent(@PathVariable String id) throws Exception {
+        return studentService.delete(new String[]{id});
     }
 }

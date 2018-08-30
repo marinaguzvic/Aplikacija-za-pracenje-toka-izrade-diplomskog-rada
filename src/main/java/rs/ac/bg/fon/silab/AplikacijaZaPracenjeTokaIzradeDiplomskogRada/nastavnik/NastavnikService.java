@@ -19,6 +19,8 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.En
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.EnumZvanje;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.Nastavnik;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.service.AbstractService;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.NastavnikDTO;
 
@@ -27,44 +29,51 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.NastavnikDTO;
  * @author Marina Guzvic
  */
 @Service
-public class NastavnikService {
+public class NastavnikService extends AbstractService{
 
     @Autowired
     NastavnikRepository nastavnikRepository;
     @Autowired
     GenericMapper mapper;
 
-    public List<NastavnikDTO> getAllNastavniks() {
+    @Override
+    public List<AbstractDTO> getAll(String [] ids) {
         List<Nastavnik> nastavniks = new ArrayList<>();
         nastavnikRepository.findAll().forEach(nastavniks::add);
-        List<NastavnikDTO> nastavnikDTOs = new ArrayList<>();
-        for (Nastavnik nastavnik : nastavniks) {
+        List<AbstractDTO> nastavnikDTOs = new ArrayList<>();
+        nastavniks.forEach((nastavnik) -> {
             nastavnikDTOs.add(mapper.nastavnikToNastavnikDTO(nastavnik));
-        }
+        });
         return nastavnikDTOs;
     }
 
-    public NastavnikDTO getNastavnik(String id) {
-        return mapper.nastavnikToNastavnikDTO(nastavnikRepository.findById(Long.parseLong(id)).get());
+    @Override
+    public AbstractDTO get(String [] ids) {
+        return mapper.nastavnikToNastavnikDTO(nastavnikRepository.findById(Long.parseLong(ids[0])).get());
     }
 
-    public NastavnikDTO addNastavnik(NastavnikDTO nastavnik) {
-        Nastavnik nastavnik1 = nastavnikRepository.save(mapper.nastavnikDTOToNastavnik(nastavnik));
-        return mapper.nastavnikToNastavnikDTO(nastavnik1);
+    @Override
+    public AbstractDTO add(AbstractDTO nastavnik,String [] ids) {
+        return mapper.nastavnikToNastavnikDTO(nastavnikRepository.save(mapper.nastavnikDTOToNastavnik((NastavnikDTO) nastavnik)));
     }
 
-    public NastavnikDTO updateNastavnik(NastavnikDTO nastavnik) {
-        Nastavnik nastavnik1 = nastavnikRepository.save(mapper.nastavnikDTOToNastavnik(nastavnik));
-        return mapper.nastavnikToNastavnikDTO(nastavnik1);
+    @Override
+    public AbstractDTO update(AbstractDTO nastavnik,String [] ids) throws Exception {
+        if(nastavnikRepository.findById(Long.parseLong(ids[0])).get() == null)throw new Exception("Nastvanik sa id-jem " + ids[0] + " ne posotoji u bazi!");
+        ((NastavnikDTO)nastavnik).setClanSistemaId(Long.parseLong(ids[0]));
+        return mapper.nastavnikToNastavnikDTO(nastavnikRepository.save(mapper.nastavnikDTOToNastavnik((NastavnikDTO) nastavnik)));
     }
 
-    void deleteNastavnik(String id) throws Exception {
+    @Override
+    public AbstractDTO delete(String [] ids) throws Exception {
+        Nastavnik nastavnik = nastavnikRepository.findById(Long.parseLong(ids[0])).get();
+        if(nastavnik == null)throw new Exception("Nastvanik sa id-jem " + ids[0] + " ne posotoji u bazi!");
         try {
-            nastavnikRepository.deleteById(Long.parseLong(id));
+            nastavnikRepository.deleteById(Long.parseLong(ids[0]));
         } catch (IllegalArgumentException iae) {
-            throw new Exception("Nastavnik sa Id-jem " + id + " ne postoji u bazi");
+            throw new Exception("Nastavnik sa Id-jem " + ids[0] + " ne postoji u bazi");
         }
-
+        return mapper.nastavnikToNastavnikDTO(nastavnik);
     }
 
     List<DiplomskiRadDTO> getDiplomskiRadsForNastavnik(String id) {
@@ -111,6 +120,11 @@ public class NastavnikService {
             }
         }
         return nastavnikDTOs;
+    }
+
+    @Override
+    public List<AbstractDTO> search(AbstractDTO search) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

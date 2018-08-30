@@ -27,7 +27,7 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
  * @author Marina Guzvic
  */
 @Service
-public class DokumentService {
+public class DokumentService{
 
     @Autowired
     DokumentRepository dokumentRepository;
@@ -36,10 +36,10 @@ public class DokumentService {
     @Autowired
             GenericMapper mapper;
 
-    List<Dokument> getAllDokuments(String diplomskiRadId) {
-        return dokumentRepository.findByDokumentPKDiplomskiRadIdFk(Long.parseLong(diplomskiRadId));
-    }
-
+//    List<Dokument> getAllDokuments(String diplomskiRadId) {
+//        return dokumentRepository.findByDokumentPKDiplomskiRadIdFk(Long.parseLong(diplomskiRadId));
+//    }
+//
     Dokument getDokument(String diplomskiRadId, String dokumentId) throws Exception {
         return dokumentRepository.findById(new DokumentPK(Long.parseLong(diplomskiRadId), Integer.parseInt(dokumentId))).orElseThrow(() -> new Exception("Dokument nije pronadjen"));
 //        return dokumentRepository.findById(new DokumentPK(Long.parseLong(diplomskiRadId), Integer.parseInt(dokumentId))).get();

@@ -36,8 +36,10 @@ import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.St
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.entity.TemaDiplomskogRada;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.mapper.GenericMapper;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.nastavnik.NastavnikRepository;
+import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.service.AbstractService;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.student.StudentRepository;
 import rs.ac.bg.fon.silab.AplikacijaZaPracenjeTokaIzradeDiplomskogRada.temaDiplomskogRada.TemaDiplomskogRadaRepository;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.ClanDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.ClanKaKlijentuDTO;
 import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadDTO;
@@ -52,7 +54,7 @@ import rs.ac.bg.fon.silab.diplomskiraddtos.DiplomskiRadUnesiKomisijuDTO;
  * @author Marina Guzvic
  */
 @Service
-public class DiplomskiRadService {
+public class DiplomskiRadService extends AbstractService{
 
     @Autowired
     DiplomskiRadRepository diplomskiRadRepository;
@@ -65,14 +67,20 @@ public class DiplomskiRadService {
     @Autowired
     GenericMapper mapper;
 
-    List<DiplomskiRad> getAllDiplomskiRads() {
+    @Override
+    public List<AbstractDTO> getAll(String [] ids) {
         List<DiplomskiRad> diplomskiRads = new ArrayList<>();
         diplomskiRadRepository.findAll().forEach(diplomskiRads::add);
-        return diplomskiRads;
+        List<AbstractDTO> dtos = new ArrayList<>();
+        diplomskiRads.forEach((diplomskiRad) -> {
+            dtos.add(mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad));
+        });
+        return dtos;
     }
 
-    DiplomskiRadDTO getDiplomskiRadByStudentId(String diplomskiRadId) {
-        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.findByStudentIdFkClanSistemaId(Long.parseLong(diplomskiRadId)));
+    @Override
+    public AbstractDTO get(String [] ids) {
+        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.findByStudentIdFkClanSistemaId(Long.parseLong(ids[0])));
     }
 
 //    void addDiplomskiRad(DiplomskiRad diplomskiRad) {
@@ -134,7 +142,16 @@ public class DiplomskiRadService {
     }
 
     DiplomskiRadDTO odobri(String diplomskiRadId) throws Exception {
-        DiplomskiRad diplomskiRad;
+        DiplomskiRad diplomskiRad = null;
+        diplomskiRad = validateOdobri(diplomskiRad, diplomskiRadId);
+        diplomskiRad.setDatumOdobravanja(LocalDate.now());
+        diplomskiRad.setStatus(EnumStatus.ODOBREN);
+        diplomskiRadRepository.save(diplomskiRad);
+        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad);
+
+    }
+
+    private DiplomskiRad validateOdobri(DiplomskiRad diplomskiRad, String diplomskiRadId) throws Exception {
         try {
             diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
         } catch (Exception e) {
@@ -143,24 +160,24 @@ public class DiplomskiRadService {
         if (diplomskiRad.getStatus() != EnumStatus.PRIJAVLJEN) {
             throw new Exception("Ne moze se odobriti rad koji nije prijavljen!");
         }
-        diplomskiRad.setDatumOdobravanja(LocalDate.now());
-        diplomskiRad.setStatus(EnumStatus.ODOBREN);
-        diplomskiRadRepository.save(diplomskiRad);
-        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad);
-
+        return diplomskiRad;
     }
 
     DiplomskiRadDTO predaj(String diplomskiRadId) throws Exception {
         DiplomskiRad diplomskiRad = diplomskiRadRepository.findById(Long.parseLong(diplomskiRadId)).get();
+        validatePredaj(diplomskiRad);
+        diplomskiRad.setDatumPredaje(LocalDate.now());
+        diplomskiRad.setStatus(EnumStatus.PREDAT);
+        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
+    }
+
+    private void validatePredaj(DiplomskiRad diplomskiRad) throws Exception {
         if (diplomskiRad.getStatus() != EnumStatus.ODREDJENA_KOMISIJA) {
             throw new Exception("Ne moze se predati rad za koji nije odredjena komisija!");
         }
         if (diplomskiRad.getDokumentCollection().size() < 1) {
             throw new Exception("Nema predatih dokumenata za diplomski rad!");
         }
-        diplomskiRad.setDatumPredaje(LocalDate.now());
-        diplomskiRad.setStatus(EnumStatus.PREDAT);
-        return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
     }
 
     DiplomskiRadDTO unesiKomisiju(DiplomskiRadUnesiKomisijuDTO diplomskiRadUnesiKomisijuDTO, String diplomskiRadId) throws Exception {
@@ -259,7 +276,9 @@ public class DiplomskiRadService {
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
     }
 
-    List<DiplomskiRadDTO> getDiplomskiRadsForNastavnikSearch(DiplomskiRadSearchDTO diplomskiRadSearchDTO) {
+    @Override
+    public List<AbstractDTO> search(AbstractDTO dto) {
+        DiplomskiRadSearchDTO diplomskiRadSearchDTO = (DiplomskiRadSearchDTO)dto;
         List<EnumStatus> statuses = new ArrayList<>();
         if ((diplomskiRadSearchDTO.getStatuses() != null)) {
             for (String statuse : diplomskiRadSearchDTO.getStatuses()) {
@@ -287,10 +306,10 @@ public class DiplomskiRadService {
                 .and(isLike(qDiplomskiRad.studentIdFk.brojIndeksa, diplomskiRadSearchDTO.getBrojIndeksa()));
         List<DiplomskiRad> diplomskiRads = new ArrayList<>();
         diplomskiRadRepository.findAll(exp).forEach(diplomskiRads::add);
-        List<DiplomskiRadDTO> diplomskiRadDTOs = new ArrayList<>();
-        for (DiplomskiRad diplomskiRad : diplomskiRads) {
+        List<AbstractDTO> diplomskiRadDTOs = new ArrayList<>();
+        diplomskiRads.forEach((diplomskiRad) -> {
             diplomskiRadDTOs.add(mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRad));
-        }
+        });
         return diplomskiRadDTOs;
     }
 
@@ -369,5 +388,20 @@ public class DiplomskiRadService {
         }
        
         return mapper.diplomskiRadToDiplomskiRadDTO(diplomskiRadRepository.save(diplomskiRad));
+    }
+
+    @Override
+    public AbstractDTO add(AbstractDTO dto, String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AbstractDTO update(AbstractDTO dto, String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AbstractDTO delete(String[] ids) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

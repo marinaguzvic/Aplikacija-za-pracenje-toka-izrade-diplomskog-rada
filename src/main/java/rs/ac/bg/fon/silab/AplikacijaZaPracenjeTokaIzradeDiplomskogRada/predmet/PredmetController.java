@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import rs.ac.bg.fon.silab.diplomskiraddtos.PredmetDTO;
+import rs.ac.bg.fon.silab.diplomskiraddtos.AbstractDTO;
 
 /**
  *
@@ -22,13 +22,13 @@ public class PredmetController {
     private PredmetService predmetService;
 
     @RequestMapping("/predmets")
-    public List<PredmetDTO> getAllPredmets() {
-        return predmetService.getAllPredmets();
+    public List<AbstractDTO> getAllPredmets() {
+        return predmetService.getAll(new String[]{});
     }
 
     @RequestMapping("/predmets/{predmetId}")
-    public PredmetDTO getPredmet(@PathVariable String predmetId) {
-        return predmetService.getPredmet(predmetId);
+    public AbstractDTO getPredmet(@PathVariable String predmetId) {
+        return predmetService.get(new String[]{predmetId});
     }
 
     
